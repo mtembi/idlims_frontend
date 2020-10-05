@@ -1,0 +1,135 @@
+/*@import '../node_modules/@syncfusion/ej2-base/styles/material.css';*/
+/*@import '../node_modules/@syncfusion/ej2-buttons/styles/material.css';*/
+/*@import '../node_modules/@syncfusion/ej2-calendars/styles/material.css';*/
+/*@import '../node_modules/@syncfusion/ej2-dropdowns/styles/material.css';*/
+/*@import '../node_modules/@syncfusion/ej2-inputs/styles/material.css';*/
+/*@import '../node_modules/@syncfusion/ej2-navigations/styles/material.css';*/
+/*@import '../node_modules/@syncfusion/ej2-popups/styles/material.css';*/
+/*@import "../node_modules/@syncfusion/ej2-react-popups/styles/material.css";*/
+/*@import '../node_modules/@syncfusion/ej2-splitbuttons/styles/material.css';*/
+/*@import "../node_modules/@syncfusion/ej2-react-grids/styles/material.css";*/
+/*@import '../node_modules/@syncfusion/ej2-react-buttons/styles/material.css';*/
+/*@import '../node_modules/@syncfusion/ej2-react-popups/styles/material.css';*/
+/*@import "../node_modules/@syncfusion/ej2-react-inputs/styles/material.css";*/
+
+
+@import "./static/fusion.css";
+
+
+.control-section.input-content-wrapper .e-input-picture:before {
+    content: '\e335';
+    font-family: e-icons;
+}
+
+.bootstrap4 .control-section.input-content-wrapper .e-input-picture:before {
+    content: '\e776';
+}
+
+.control-section.input-content-wrapper .e-input-calendar:before {
+    content: "\e901";
+    font-family: e-icons;
+    font-size: 13px;
+}
+
+.fabric .control-section.input-content-wrapper .e-input-calendar:before {
+    content:'\e93a';
+}
+.bootstrap .control-section.input-content-wrapper .e-input-calendar:before {
+    content:'\e960';
+}
+.bootstrap4 .control-section.input-content-wrapper .e-input-calendar:before {
+    content:'\e7be';
+}
+.highcontrast .control-section.input-content-wrapper .e-input-calendar:before {
+    content:'\e93a';
+}
+
+
+.control-section.input-content-wrapper .e-input-group.e-small { /* csslint allow: adjoining-classes */
+    padding-top: 0px;
+}
+
+.control-section.input-content-wrapper .control-label {
+    font-size: 12px;
+    opacity: 0.54;
+    padding:24px 0 0;
+}
+
+.control-section.input-content-wrapper div.row {
+    padding: 0 30px;
+}
+
+@media only screen and (max-width: 480px) {
+    .control-section.input-content-wrapper .col-xs-6,
+    .control-section.input-content-wrapper .col-xs-4,
+    .control-section.input-content-wrapper .col-xs-12 {
+        box-sizing: border-box;
+        padding: 10px 5px;
+        width: 100%;
+    }
+    .control-section.input-content-wrapper div.row {
+        padding: 0 15px;
+    }
+}
+
+#description td { /* csslint allow: adjoining-classes */
+    vertical-align: top;
+}
+
+.control-section.input-content-wrapper .custom-padding-10 {
+    padding:10px 0 0;
+}
+
+.control-section.input-content-wrapper .custom-padding-5 {
+    padding:5px 0;
+}
+
+.control-section.input-content-wrapper .custom-width {
+    width: 100%;
+}
+
+.control-section.input-content-wrapper .custom-padding-bottom-10 {
+    padding-bottom: 10px;
+}
+
+.control-section .row.custom-margin {
+    margin-top: 20px;
+}
+
+.e-bigger .control-section .row.custom-margin {
+    margin-top: 15px;
+}
+
+@media only screen and (max-width: 480px) {
+    .control-section.input-content-wrapper .content-wrapper {
+        width: 92%;
+    }
+    .control-section.input-content-wrapper .col-xs-6,
+    .control-section.input-content-wrapper .col-xs-4,
+    .control-section.input-content-wrapper .col-xs-12 {
+        padding: 10px 5px;
+        width: 100%;
+    }
+
+}
+.e-outline.e-float-input,
+.e-outline.e-float-input.e-control-wrapper {
+    margin-top: 0;
+}
+.fabric .row.material2,
+.bootstrap .row.material2,
+.bootstrap4 .row.material2,
+.highcontrast .row.material2 {
+    display: none;
+}
+.control-section.input-content-wrapper .col-xs-12.col-sm-12.col-lg-12.col-md-12 {
+    padding: 0px 15px;
+}
+.multiline-wrapper {
+    margin: 40px 200px;
+}
+.multiline-property .left-side{
+    font-size: 14px;
+    padding: 8px;
+    width: 50%;
+}

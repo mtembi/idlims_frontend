@@ -1,0 +1,2 @@
+export const USER_LOGGED_IN="USER_LOGGED_IN";
+export const SHOW_SIDE_BAR="SHOW_SIDE_BAR";
