@@ -50,7 +50,7 @@ export const fetchTxnDocData=(doc_type)=>{
         dispatch(fetchTxnDocRequest());
         let dummyData=[];
         for (var i = 0; i < 40; i++) {
-            let pt=i%4?1:2;
+
             dummyData.push(
                 {
                     id: i,

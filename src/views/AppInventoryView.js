@@ -1,10 +1,9 @@
 import React, {useRef} from 'react';
-import {Grid, Typography} from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {TabComponent, TabItemDirective, TabItemsDirective} from "@syncfusion/ej2-react-navigations";
 import AppInventoryTable from "../components/AppInventoryTable";
 import {indigo} from "@material-ui/core/colors";
 import AppStockCardTable from "../components/AppStockCardTable";
+import {Segment} from "semantic-ui-react";
 
 const setStyle = makeStyles((theme) => ({
     root: {
@@ -38,17 +37,14 @@ const AppInventoryView = () => {
     };
 
     return (
-        <>
-            <Grid container className={classes.root} alignContent="flex-start" spacing={2}>
-                <Grid item xs={12} className={classes.titleItem}>
-                    <Typography className={classes.title} variant="h5">Inventory</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <AppInventoryTable/>
-                </Grid>
-            </Grid>
-
-        </>
+        <Segment.Group raised>
+            <Segment inverted color="blue">
+                <h3>Inventory</h3>
+            </Segment>
+            <Segment>
+                <AppInventoryTable/>
+            </Segment>
+        </Segment.Group>
     )
 };
 

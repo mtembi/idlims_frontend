@@ -31,7 +31,6 @@ const AppInventoryTable = ({toggleInventoryDialog, showUomDialog, setSelectedInv
     }, []);
 
 
-
     const pageSettings = {
         pageCount: 4,
         pageSizes: true
@@ -44,8 +43,8 @@ const AppInventoryTable = ({toggleInventoryDialog, showUomDialog, setSelectedInv
         model: 'Row'
     };
 
-    const invListUpd=useSelector(state=> state.invFxnReducer.putInventoryLoading);
-    useEffect(()=>{
+    const invListUpd = useSelector(state => state.invFxnReducer.putInventoryLoading);
+    useEffect(() => {
         console.log("Use Effect", "Inv List Changed");
     });
 
@@ -60,7 +59,7 @@ const AppInventoryTable = ({toggleInventoryDialog, showUomDialog, setSelectedInv
     };
     const handleRowDeselect = () => {
         setSelectedInventoryItem(null);
-        if(gridRef) {
+        if (gridRef) {
             gridRef.current.toolbarModule.enableItems(['editInventory'], false);
         }
     };
@@ -69,7 +68,7 @@ const AppInventoryTable = ({toggleInventoryDialog, showUomDialog, setSelectedInv
             toggleInventoryDialog(true, appConstants.ADD_ITEM_CONSTANT);
         }
 
-        if(gridRef && args.item.id==="editInventory") {
+        if (gridRef && args.item.id === "editInventory") {
             if (gridRef.current.getSelectedRecords().length > 0) {
                 setSelectedInventoryItem(gridRef.current.getSelectedRecords()[0]);
                 toggleInventoryDialog(true, appConstants.EDIT_ITEM_CONSTANT);
@@ -78,11 +77,11 @@ const AppInventoryTable = ({toggleInventoryDialog, showUomDialog, setSelectedInv
             }
         }
 
-        if(gridRef && args.item.id==="mngUomId"){
+        if (gridRef && args.item.id === "mngUomId") {
             showUomDialog(true, appConstants.ADD_ITEM_CONSTANT);
         }
 
-        if(gridRef && args.item.id==="exportInventoryList"){
+        if (gridRef && args.item.id === "exportInventoryList") {
             gridRef.current.excelExport();
         }
     };
@@ -90,41 +89,37 @@ const AppInventoryTable = ({toggleInventoryDialog, showUomDialog, setSelectedInv
     return (
         invReducer.inventoryDataLoading ?
             <div>Loading data</div> :
-            <div className="control-pane">
-                <div className="control-section">
-                    <GridComponent
-                        ref={gridRef}
-                        dataSource={invReducer.inventoryDataList}
-                        pageSettings={pageSettings}
-                        allowPaging={false}
-                        rowSelected={handleRowSelected}
-                        height="400"
-                        rowDeselected={handleRowDeselect}
-                        allowSorting={true}
-                        toolbar={toolbarOptions}
-                        toolbarClick={handleToolbarClick}
-                        enableColumnVirtualization={true}
-                        enableVirtualization={true}
-                        filterSettings={filterType}
-                        allowFiltering={true}
-                        allowExcelExport={true}
-                        selectionSettings={selectionSetting}>
-                        <ColumnsDirective>
-                            <ColumnDirective field="id" headerText="Id" width="80" isPrimaryKey={true}/>
-                            <ColumnDirective field="invRef" headerText="Ref#"/>
-                            <ColumnDirective field="invName" headerText="Name"/>
-                            <ColumnDirective field="uom" headerText="Uom"/>
-                            <ColumnDirective field="invCurrQty" textAlign="Right" headerText="Quantity"/>
-                            <ColumnDirective field="invMinQty" textAlign="Right" headerText="Min. Qty"/>
-                            <ColumnDirective field="invMaxQty" textAlign="Right" headerText="Max. Qty"/>
-                            <ColumnDirective field="createDate" headerText="Created"/>
-                            <ColumnDirective field="activeStatus" headerText="Status"/>
-                        </ColumnsDirective>
-                        <Inject
-                            services={[Page, Selection, Toolbar, Search, ExcelExport, VirtualScroll, Sort, Filter]}/>
-                    </GridComponent>
-                </div>
-            </div>
+            <GridComponent
+                ref={gridRef}
+                dataSource={invReducer.inventoryDataList}
+                pageSettings={pageSettings}
+                allowPaging={false}
+                rowSelected={handleRowSelected}
+                height="350"
+                rowDeselected={handleRowDeselect}
+                allowSorting={true}
+                toolbar={toolbarOptions}
+                toolbarClick={handleToolbarClick}
+                enableColumnVirtualization={true}
+                enableVirtualization={true}
+                filterSettings={filterType}
+                allowFiltering={true}
+                allowExcelExport={true}
+                selectionSettings={selectionSetting}>
+                <ColumnsDirective>
+                    <ColumnDirective field="id" headerText="Id" width="80" isPrimaryKey={true}/>
+                    <ColumnDirective field="invRef" headerText="Ref#"/>
+                    <ColumnDirective field="invName" headerText="Name"/>
+                    <ColumnDirective field="uom" headerText="Uom"/>
+                    <ColumnDirective field="invCurrQty" textAlign="Right" headerText="Quantity"/>
+                    <ColumnDirective field="invMinQty" textAlign="Right" headerText="Min. Qty"/>
+                    <ColumnDirective field="invMaxQty" textAlign="Right" headerText="Max. Qty"/>
+                    <ColumnDirective field="createDate" headerText="Created"/>
+                    <ColumnDirective field="activeStatus" headerText="Status"/>
+                </ColumnsDirective>
+                <Inject
+                    services={[Page, Selection, Toolbar, Search, ExcelExport, VirtualScroll, Sort, Filter]}/>
+            </GridComponent>
     )
 };
 
@@ -133,7 +128,7 @@ const mapDispatchToProps = dispatch => {
         toggleInventoryDialog: (show, type) => dispatch(showInventoryDialog(show, type)),
         fetchInventoryData: () => dispatch(fetchInventoryData()),
         setSelectedInventoryItem: item => dispatch(setSelectedInventoryItem(item)),
-        showUomDialog: (show, type)=>dispatch(showUomDialog(show, type)),
+        showUomDialog: (show, type) => dispatch(showUomDialog(show, type)),
     }
 };
 

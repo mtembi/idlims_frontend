@@ -35,10 +35,7 @@ const GrnTable=()=>{
 
     };
 
-
     return (
-
-
                     <GridComponent
                         ref={gridRef}
                         dataSource={docList}
@@ -47,6 +44,7 @@ const GrnTable=()=>{
                         height="350"
                         rowSelected={handleRowSelected}
                         rowDeselected={handleRowDeselect}
+                        allowSorting={true}
                         toolbar={toolbarOptions}
                         toolbarClick={handleToolbarClick}
                         enableColumnVirtualization={true}

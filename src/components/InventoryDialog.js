@@ -1,26 +1,29 @@
-import React, {useRef, useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
+import {useSelector, useDispatch} from "react-redux";
 import {connect} from "react-redux";
-import {showInventoryDialog, fetchUomData, putInventoryData} from "../redux";
-import {Modal, Ref, Image, Header, Button, Icon, Segment, Form, Input, TextArea, Grid, Dropdown, Checkbox} from "semantic-ui-react";
+import {fetchUomData, putInventoryData, showInventoryDialog} from "../redux";
+import {Button, Checkbox, Dropdown, Form, Grid, Icon, Input, Modal, Ref, Segment, TextArea} from "semantic-ui-react";
 import SemanticDatepicker from 'react-semantic-ui-datepickers';
 import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
 
 
-const InventoryDialog = ({
-                             invFxnReducer,
-                             uomFxnReducer,
-                             showInventoryDialog,
-                             fetchUomList,
-                             saveInventory}) => {
+const InventoryDialog = () => {
+    const dispatch=useDispatch();
+    const uomList=useSelector(state=>state.uomFxnReducer.uomDataList);
+    const uomListLoading=useSelector(state=>state.uomFxnReducer.uomDataLoading);
+    const showDialog=useSelector(state=>state.invFxnReducer.showInventoryDialog);
+    const dialogType=useSelector(state=>state.invFxnReducer.inventoryDialogType);
+
 
     const dlgRef = useRef(null);
-    const handleDialogOpen = (args) => {
 
+    const handleDialogOpen = (args) => {
+        console.log("Inventory dialog opened");
     };
 
     const getUomText=(id)=>{
         if(id && id!==0) {
-            let uoms = uomFxnReducer.uomDataList.filter(a => a.id === id);
+            let uoms = uomList.filter(a => a.id === id);
             return uoms[0].uomName + "("+uoms[0].uomShort+")";
         }else
             return "Unit of Measure";
@@ -36,53 +39,42 @@ const InventoryDialog = ({
     const [invActive, setInvActive]=useState(true);
     const [invCreated, setInvCreated]=useState(new Date());
 
-    const mapUomOptions=()=>{
-        return uomFxnReducer.uomDataList.map(uom=>{
-            return (
-                {
-                    key: uom.id,
-                    value: uom.id,
-                    text: uom.uomName
-                }
-            )
-        })
-    };
-
     const validateData=()=>{
-
+        return true;
     };
 
     const handleSave=()=>{
-        //validation comes here
-        let inv={
-            id: null,
-            invRef: invRef,
-            invName: invName,
-            invDesc: invDesc,
-            uom: uomFxnReducer.uomDataList.filter(a=>a.id===invUom)[0],
-            createDate: invCreated,
-            activeStatus: invActive,
-            invMinQty: minQty,
-            invMaxQty: maxQty,
-            invCurrQty: currQty
-        };
+        let isValid=validateData();
+        if(typeof isValid === Boolean && isValid) {
+            let inv = {
+                id: null,
+                invRef: invRef,
+                invName: invName,
+                invDesc: invDesc,
+                uom: uomList.filter(a => a.id === invUom)[0],
+                createDate: invCreated,
+                activeStatus: invActive,
+                invMinQty: minQty,
+                invMaxQty: maxQty,
+                invCurrQty: currQty
+            };
 
-        saveInventory(inv);
-        showInventoryDialog(false);
+            dispatch(putInventoryData(inv));
+            dispatch(showInventoryDialog(false));
+        }else{
+            alert(isValid);
+        }
     };
 
-    useEffect(()=>{
-    }, [invFxnReducer.putInventoryLoading])
-
     useEffect(() => {
-        fetchUomList();
+        dispatch(fetchUomData());
     }, []);
 
     return (
         <Ref innerRef={dlgRef}>
             <Modal
-                open={invFxnReducer.showInventoryDialog}
-                onClose={() => showInventoryDialog(false)}
+                open={showDialog}
+                onClose={() => dispatch(showInventoryDialog(false))}
                 onOpen={handleDialogOpen}
                 closeOnEscape={true}
                 closeOnDimmerClick={false}
@@ -91,7 +83,7 @@ const InventoryDialog = ({
                 size="small">
                 <Modal.Header>
                     <Icon name="archive"/>
-                    {invFxnReducer.inventoryDialogType} Inventory
+                    {dialogType} Inventory
                 </Modal.Header>
                 <Modal.Content>
                     <Grid container>
@@ -117,11 +109,11 @@ const InventoryDialog = ({
                         </Grid.Row>
                         <Grid.Row columns={2}>
                             <Grid.Column style={{padding:0}}>
-                                <Segment loading={uomFxnReducer.uomDataLoading ? true : false} secondary>
+                                <Segment loading={uomListLoading ? true : false} secondary>
                                     <Form>
                                         <Form.Field>
                                             <Dropdown fluid selection clearable deburr search labeled text={invUom===null?"Unit of Measure":getUomText(invUom)}
-                                                      options={uomFxnReducer.uomDataList.map(uom=>{
+                                                      options={uomList.map(uom=>{
                                                           return (
                                                               {
                                                                   key: uom.id,
@@ -180,7 +172,7 @@ const InventoryDialog = ({
                         positive
                     />
                     <Button color='black' icon="times" labelPosition="right"
-                            onClick={()=>showInventoryDialog(false)}
+                            onClick={()=>dispatch(showInventoryDialog(false))}
                             content="Cancel"/>
                 </Modal.Actions>
             </Modal>
@@ -188,22 +180,6 @@ const InventoryDialog = ({
     )
 };
 
-const mapStateToProps = state => {
-    return {
-        invFxnReducer: state.invFxnReducer,
-        uomFxnReducer: state.uomFxnReducer,
-    }
-};
 
-const mapDispatchToProps = dispatch => {
-    return {
-        showInventoryDialog: (show, type) => {
-            dispatch(showInventoryDialog(show, type))
-        },
-        fetchUomList: () => dispatch(fetchUomData()),
-        saveInventory: data=>dispatch(putInventoryData(data))
-    }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(InventoryDialog);
+export default InventoryDialog;
 

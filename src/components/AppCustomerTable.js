@@ -8,7 +8,7 @@ import {
     Page,
     Search,
     Selection,
-    Toolbar
+    Toolbar, VirtualScroll, Sort, Filter
 } from "@syncfusion/ej2-react-grids";
 
 const AppCustomerTable = () => {
@@ -45,36 +45,36 @@ const AppCustomerTable = () => {
         selectedRecord = null;
     };
 
-    return (
-        <>
-            <div className="control-pane">
-                <div className="control-section">
-                    <GridComponent
-                        ref={gridRef}
-                        dataSource={dummyData}
-                        pageSettings={pageSettings}
-                        allowPaging={true}
-                        rowSelected={handleRowSelected}
-                        rowDeselected={handleRowDeselect}
-                        toolbar={toolbarOptions}
-                        enableColumnVirtualization={true}
-                        enableVirtualization={true}
-                        allowExcelExport={true}
-                        selectionSettings={selectionSetting}>
-                        <ColumnsDirective>
-                            <ColumnDirective field="id" headerText="Id" width="80" isPrimaryKey={true}/>
-                            <ColumnDirective field="partner_ref" headerText="Item"/>
-                            <ColumnDirective field="partner_name" headerText="Uom"/>
-                            <ColumnDirective field="partner_tel" headerText="In"/>
-                            <ColumnDirective field="active_status" headerText="Out"/>
-                            <ColumnDirective field="create_date" headerText="Date"/>
-                        </ColumnsDirective>
-                        <Inject services={[Page, Selection, Toolbar, Search, ExcelExport]}/>
-                    </GridComponent>
-                </div>
-            </div>
+    const handleToolbarClick=()=>{
 
-        </>
+    };
+
+    return (
+        <GridComponent
+            ref={gridRef}
+            dataSource={dummyData}
+            pageSettings={pageSettings}
+            allowPaging={false}
+            height={"350"}
+            rowSelected={handleRowSelected}
+            rowDeselected={handleRowDeselect}
+            toolbar={toolbarOptions}
+            toolbarClick={handleToolbarClick}
+            enableColumnVirtualization={true}
+            enableVirtualization={true}
+            allowFiltering={true}
+            allowExcelExport={true}
+            selectionSettings={selectionSetting}>
+            <ColumnsDirective>
+                <ColumnDirective field="id" headerText="Id" width="80" isPrimaryKey={true}/>
+                <ColumnDirective field="partner_ref" headerText="Item"/>
+                <ColumnDirective field="partner_name" headerText="Uom"/>
+                <ColumnDirective field="partner_tel" headerText="In"/>
+                <ColumnDirective field="active_status" headerText="Out"/>
+                <ColumnDirective field="create_date" headerText="Date"/>
+            </ColumnsDirective>
+            <Inject services={[Page, Selection, Toolbar, Search, ExcelExport, VirtualScroll, Sort, Filter]}/>
+        </GridComponent>
     )
 };
 
