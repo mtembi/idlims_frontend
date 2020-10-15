@@ -1,8 +1,8 @@
 import React, {useEffect, useRef} from 'react';
 import {useSelector, useDispatch} from "react-redux";
 import {ColumnDirective, ColumnsDirective, GridComponent, Inject, Page, Selection, Toolbar, Search, ExcelExport, VirtualScroll, Sort, Filter} from "@syncfusion/ej2-react-grids";
-import {fetchTxnDocData} from "../redux";
-import * as appConstants from '../constant';
+import {fetchTxnDocData} from "../../redux";
+import * as appConstants from '../../constant';
 
 const GrnTable=()=>{
     const dispatch=useDispatch();

@@ -1,6 +1,8 @@
 import * as userFxnTypes from './UserFxnTypes';
+import axios from 'axios';
+import * as appConstants from '../../constant';
 
-export const requestUserNotifications=notifications=>{
+export const requestUserNotifications=()=>{
     return {
         type: userFxnTypes.FETCH_USER_NOTIFICATIONS_REQUEST
     }
@@ -35,5 +37,62 @@ export const fetchNotifications=()=>{
     return (dispatch)=>{
         dispatch(requestUserNotifications());
         dispatch(fetchUserNotificationsSuccess(dummyData));
+    }
+};
+
+
+
+export const userLoginRequest=()=>{
+    return {
+        type: userFxnTypes.USER_LOGIN_REQUEST
+    }
+};
+
+export const userLoginSuccess=token=>{
+    return {
+        type: userFxnTypes.USER_LOGIN_SUCCESS,
+        payload: {
+            token:token
+        }
+    }
+};
+
+export const userLoginError=error=>{
+    return {
+        type: userFxnTypes.USER_LOGIN_ERROR,
+        payload: {
+            error
+        }
+    }
+};
+
+export const loginUser=(username, password)=>{
+
+    return (dispatch)=>{
+        dispatch(userLoginRequest());
+        axios
+            .post(
+                appConstants.API_URL+"/api/authenticate",
+                {
+                    username: username,
+                    password: password
+                }
+            )
+            .then(
+                response=>{
+                    console.log("logging in user", response.data.accessToken);
+                    console.log("token 1: ", response);
+                    console.log("token 2: ", response.data);
+
+                    if(response.data){
+                        dispatch(userLoginSuccess(JSON.stringify(response.data)));
+                    }
+
+                },
+                error=>{
+                    console.error("login error", error);
+                    dispatch(userLoginError(error));
+                }
+            )
     }
 };

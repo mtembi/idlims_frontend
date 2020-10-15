@@ -1,4 +1,4 @@
-import * as PropTypes from 'prop-types';
+export const API_URL="http://localhost:5000";
 
 export const ADD_ITEM_CONSTANT="Add";
 export const EDIT_ITEM_CONSTANT="Edit";

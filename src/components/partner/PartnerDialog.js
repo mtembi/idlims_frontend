@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {Dimmer, Loader, Grid, Icon, Input, Label, Modal, Segment, TextArea, Checkbox, Form, Button} from "semantic-ui-react";
-import {putPartnerData, showPartnerDialog} from "../redux";
+import {putPartnerData, showPartnerDialog} from "../../redux";
 import SemanticDatepicker from "react-semantic-ui-datepickers";
-import * as appConstants from '../constant';
+import * as appConstants from '../../constant';
 
 const PartnerDialog = () => {
 

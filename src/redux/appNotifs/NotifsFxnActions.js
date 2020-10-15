@@ -1,5 +1,4 @@
 import * as notFxnTypes from './NotifsFxnTypes';
-import {produce} from "immer";
 
 export const enqueueSnackbar = (notification) => {
     const key = notification.options && notification.options.key;

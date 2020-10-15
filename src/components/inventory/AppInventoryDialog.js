@@ -1,6 +1,6 @@
 import React, {useRef, useEffect, useState} from 'react';
 import {DialogComponent, AnimationSettingsModel} from "@syncfusion/ej2-react-popups";
-import {showInventoryDialog, fetchUomData} from "../redux";
+import {showInventoryDialog, fetchUomData} from "../../redux";
 import {connect} from "react-redux";
 import {Grid, TextField} from "@material-ui/core";
 import {NumericTextBoxComponent, TextBoxComponent} from "@syncfusion/ej2-react-inputs";

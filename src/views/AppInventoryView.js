@@ -1,8 +1,8 @@
 import React, {useRef} from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import AppInventoryTable from "../components/AppInventoryTable";
+import AppInventoryTable from "../components/inventory/AppInventoryTable";
 import {indigo} from "@material-ui/core/colors";
-import AppStockCardTable from "../components/AppStockCardTable";
+import AppStockCardTable from "../components/inventory/AppStockCardTable";
 import {Segment} from "semantic-ui-react";
 
 const setStyle = makeStyles((theme) => ({

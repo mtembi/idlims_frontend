@@ -2,7 +2,7 @@ import React from 'react';
 import {Grid, Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {indigo} from "@material-ui/core/colors";
-import AppSupplierTable from "../components/AppSupplierTable";
+import AppSupplierTable from "../components/partner/AppSupplierTable";
 
 const setStyle = makeStyles((theme) => ({
     root: {

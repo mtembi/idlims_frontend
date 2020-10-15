@@ -2,7 +2,7 @@ import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {showNotification} from "../redux";
 import {Segment} from "semantic-ui-react";
-import GrnTable from "../components/GrnTable";
+import GrnTable from "../components/inboundDel/GrnTable";
 
 /**
  * Warning, success, error, info

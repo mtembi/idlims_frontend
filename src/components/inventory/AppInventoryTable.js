@@ -13,8 +13,8 @@ import {
     Toolbar,
     VirtualScroll
 } from "@syncfusion/ej2-react-grids";
-import * as appConstants from '../constant';
-import {fetchInventoryData, showInventoryDialog, setSelectedInventoryItem, showUomDialog} from "../redux";
+import * as appConstants from '../../constant';
+import {fetchInventoryData, showInventoryDialog, setSelectedInventoryItem, showUomDialog} from "../../redux";
 import {connect, useSelector} from "react-redux";
 
 const AppInventoryTable = ({toggleInventoryDialog, showUomDialog, setSelectedInventoryItem, invReducer, fetchInventoryData}) => {

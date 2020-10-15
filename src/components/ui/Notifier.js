@@ -1,7 +1,7 @@
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {useSnackbar} from "notistack";
-import {removeSnackbar} from "../redux/appNotifs/NotifsFxnActions";
+import {removeSnackbar} from "../../redux/appNotifs/NotifsFxnActions";
 
 let displayed = [];
 

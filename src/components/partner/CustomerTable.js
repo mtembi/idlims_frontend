@@ -1,11 +1,20 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {fetchPartnerData, setSelectedPartnerItem, showPartnerDialog} from "../redux";
-import * as appConstants from "../constant";
-import {ColumnDirective, ColumnsDirective, GridComponent, Inject, Page, Selection, Toolbar, Search, ExcelExport} from "@syncfusion/ej2-react-grids";
+import {
+    ColumnDirective,
+    ColumnsDirective,
+    GridComponent,
+    Inject,
+    Page,
+    Selection,
+    Toolbar,
+    Search,
+    ExcelExport
+} from "@syncfusion/ej2-react-grids";
+import {fetchPartnerData, showPartnerDialog, setSelectedPartnerItem} from "../../redux";
+import * as appConstants from "../../constant";
 
-
-const AppSupplierTable=()=>{
+const CustomerTable = () => {
     const gridRef = useRef(null);
     const partnerDataList = useSelector(state => state.partnerFxnReducer.fetchDataList);
     const fetchLoading = useSelector(state => state.partnerFxnReducer.fetchDataLoading);
@@ -16,7 +25,7 @@ const AppSupplierTable=()=>{
     const [selectedItem, setSelectedItem] = useState(null);
 
     useEffect(() => {
-        setTimeout(dispatch(fetchPartnerData(appConstants.SUPPLER_TYPE)), 2000);
+        setTimeout(dispatch(fetchPartnerData(appConstants.CUSTOMER_TYPE)), 2000);
     }, []);
 
 
@@ -62,7 +71,7 @@ const AppSupplierTable=()=>{
 
     const handleToolbarClick = args => {
         if (args.item.id === "addMenuId") {
-            dispatch(showPartnerDialog(true, appConstants.SUPPLER_TYPE, appConstants.ADD_ITEM_CONSTANT));
+            dispatch(showPartnerDialog(true, appConstants.CUSTOMER_TYPE, appConstants.ADD_ITEM_CONSTANT));
         }
         if (gridRef && args.item.id === "editMenuId") {
             let selectedRecords=gridRef.current.getSelectedRecords();
@@ -114,4 +123,4 @@ const AppSupplierTable=()=>{
     )
 };
 
-export default AppSupplierTable;
+export default CustomerTable;

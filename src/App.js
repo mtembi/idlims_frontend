@@ -1,49 +1,52 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import {Provider} from "react-redux";
-import {appStore} from "./redux/AppStore";
+import {useDispatch, useSelector} from "react-redux";
 import {SnackbarProvider} from "notistack";
-import AppNavBar from "./components/AppNavBar";
-import AppSideBar from "./components/AppSideBar";
+import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
+import "./App.css";
+import 'semantic-ui-css/semantic.min.css'
+import Notifier from "./components/ui/Notifier";
+import AppNavBar from "./components/ui/AppNavBar";
+import AppSideBar from "./components/ui/AppSideBar";
+import AppLoginView from "./views/AppLoginView";
 import AppDashBoard from "./views/AppDashBoard";
 import AppInventoryView from "./views/AppInventoryView";
-import "./App.css";
 import AppCustomerView from "./views/AppCustomerView";
 import AppSupplierView from "./views/AppSupplierView";
-import InventoryDialog from "./components/InventoryDialog";
-import 'semantic-ui-css/semantic.min.css'
-import UomDialog from "./components/UomDialog";
-import PartnerDialog from "./components/PartnerDialog";
 import AppGrnView from "./views/AppGrnView";
-import Notifier from "./components/Notifier";
+import InventoryDialog from "./components/inventory/InventoryDialog";
+import UomDialog from "./components/inventory/UomDialog";
+import PartnerDialog from "./components/partner/PartnerDialog";
+import ProtectedRoute from "./components/ui/ProtectedRoute";
 
 
 function App() {
+    const dispatch = useDispatch();
+    const isLoggedIn = useSelector(state => state.userFxnReducer);
+
     return (
-        <Provider store={appStore}>
-            <SnackbarProvider preventDuplicate anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-            }}>
-                <Router baseName="/">
-                    <AppNavBar/>
-                    <AppSideBar/>
-                    <div id="appTarget" className="App" style={{padding: 10}}>
-                        <Switch>
-                            <Route exact path="/"><AppDashBoard/></Route>
-                            <Route exact path="/inventory"><AppInventoryView/></Route>
-                            <Route exact path="/customer"><AppCustomerView/></Route>
-                            <Route exact path="/supplier"><AppSupplierView/></Route>
-                            <Route exact path="/grn"><AppGrnView/></Route>
-                        </Switch>
-                    </div>
-                </Router>
-                <InventoryDialog/>
-                <UomDialog/>
-                <PartnerDialog/>
-                <Notifier/>
-            </SnackbarProvider>
-        </Provider>
+        <SnackbarProvider preventDuplicate anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+        }}>
+            <Router baseName="/">
+                <AppNavBar/>
+                <AppSideBar/>
+                <div id="appTarget" className="App" style={{padding: 10}}>
+                    <Switch>
+                        <Route exact path="/login"><AppLoginView/></Route>
+                        <ProtectedRoute exact path="/" component={<AppDashBoard/>}></ProtectedRoute>
+                        <ProtectedRoute exact path="/inventory" component={<AppInventoryView/>}></ProtectedRoute>
+                        <ProtectedRoute exact path="/customer" component={<AppCustomerView/>}></ProtectedRoute>
+                        <ProtectedRoute exact path="/supplier" component={<AppSupplierView/>}></ProtectedRoute>
+                        <ProtectedRoute exact path="/grn" component={<AppGrnView/>}></ProtectedRoute>
+                    </Switch>
+                </div>
+            </Router>
+            <InventoryDialog/>
+            <UomDialog/>
+            <PartnerDialog/>
+            <Notifier/>
+        </SnackbarProvider>
     );
 }
 

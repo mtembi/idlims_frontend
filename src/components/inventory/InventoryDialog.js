@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useSelector, useDispatch} from "react-redux";
 import {connect} from "react-redux";
-import {fetchUomData, putInventoryData, showInventoryDialog} from "../redux";
+import {fetchUomData, putInventoryData, showInventoryDialog} from "../../redux";
 import {Button, Checkbox, Dropdown, Form, Grid, Icon, Input, Modal, Ref, Segment, TextArea} from "semantic-ui-react";
 import SemanticDatepicker from 'react-semantic-ui-datepickers';
 import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';

@@ -1,7 +1,9 @@
 import * as invFxnTypes from './InvFxnTypes';
 import *as appContants from '../../constant';
+import axios from 'axios';
+import {API_URL} from "../../constant";
 
-export const showInventoryDialog=(show, type=appContants.ADD_ITEM_CONSTANT)=>{
+export const showInventoryDialog = (show, type = appContants.ADD_ITEM_CONSTANT) => {
     return {
         type: invFxnTypes.SHOW_INVENTORY_DIALOG,
         payload: {
@@ -11,22 +13,22 @@ export const showInventoryDialog=(show, type=appContants.ADD_ITEM_CONSTANT)=>{
     }
 };
 
-export const setSelectedInventoryItem=(item)=>{
+export const setSelectedInventoryItem = (item) => {
     return {
         type: invFxnTypes.SET_SELECTED_INVENTORY_ITEM,
-        payload:{
+        payload: {
             selectedItem: item
         }
     }
 };
 
-export const fetchInventoryRequest=()=>{
+export const fetchInventoryRequest = () => {
     return {
         type: invFxnTypes.FETCH_INVENTORY_REQUEST
     }
 };
 
-export const fetchInventorySuccess=inventories=>{
+export const fetchInventorySuccess = inventories => {
     return {
         type: invFxnTypes.FETCH_INVENTORY_SUCCESS,
         payload: {
@@ -35,19 +37,35 @@ export const fetchInventorySuccess=inventories=>{
     }
 };
 
-export const fetchInventoryFailure=error=>{
+export const fetchInventoryFailure = error => {
     return {
         type: invFxnTypes.FETCH_INVENTORY_FAILURE,
-        payload:{
+        payload: {
             error: error
         }
     }
 };
 
-export const fetchInventoryData=()=>{
-    return dispatch=>{
+export const fetchInventoryData = () => {
+    return dispatch => {
         dispatch(fetchInventoryRequest());
-        let dummyData=[];
+        console.log("testing fetch inventory");
+        axios.get(
+            API_URL + "/inventories",
+            {
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+                    'Upgrade-Insecure-Requests': 1
+                }
+            })
+            .then(res => {
+                console.log("API Access: ", res);
+            }, err => {
+                console.error("API error: ", err);
+            });
+
+        let dummyData = [];
         for (var i = 0; i < 20; i++) {
             dummyData.push(
                 {
@@ -68,13 +86,13 @@ export const fetchInventoryData=()=>{
     }
 };
 
-export const putInventoryRequest=()=>{
+export const putInventoryRequest = () => {
     return {
         type: invFxnTypes.PUT_INVENTORY_REQUEST,
     }
 };
 
-export const putInventorySuccess=data=>{
+export const putInventorySuccess = data => {
     return {
         type: invFxnTypes.PUT_INVENTORY_SUCCESS,
         payload: {
@@ -83,17 +101,17 @@ export const putInventorySuccess=data=>{
     }
 };
 
-export const putInventoryFailure=error=>{
+export const putInventoryFailure = error => {
     return {
         type: invFxnTypes.PUT_INVENTORY_FAILURE,
-        payload:{
+        payload: {
             error: error
         }
     }
 };
 
-export const putInventoryData=inventory=>{
-    return dispatch=>{
+export const putInventoryData = inventory => {
+    return dispatch => {
         dispatch(putInventoryRequest());
         dispatch(putInventorySuccess(inventory));
     }

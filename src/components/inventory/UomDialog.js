@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from "react-redux";
 import {Icon, Modal, List, Grid, Segment, Label, Input, Form, Button} from "semantic-ui-react";
-import {putUomData, showUomDialog, fetchUomData} from "../redux";
+import {putUomData, showUomDialog, fetchUomData} from "../../redux";
 
 const UomDialog=()=>{
     const dialogOpen=useSelector(state=>state.uomFxnReducer.showUomDialog);
