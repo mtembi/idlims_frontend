@@ -1,17 +1,15 @@
 import React, {useState} from 'react';
 import {useHistory} from "react-router";
-import {Collapse, Drawer, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
+import {Collapse, Drawer, List} from "@material-ui/core";
 import {
-    Assessment as ReportIcon,
     ExpandLess,
     ExpandMore,
-    FormatAlignJustify as ListIcon,
     Home as DashIcon,
     LocalShipping,
     NavigateBeforeOutlined,
     ReplyAllRounded,
     SaveAlt,
-    Settings
+    ArtTrack
 } from "@material-ui/icons";
 import {sideBarToggled} from "../../redux";
 import {useDispatch, useSelector} from "react-redux";
@@ -103,7 +101,8 @@ const AppSideBar = () => {
                             }} subMenu={true}/>
                         </List>
                     </Collapse>
-                    <ImsMenuListItem text="Listing" onClick={()=>setListMenuOpen(!listMenuOpen)}/>
+                    <ImsMenuListItem icon={<ArtTrack/>} text="Listing" onClick={()=>setListMenuOpen(!listMenuOpen)}
+                                     collapseIcon={custTxnListOpen ? <ExpandLess/> : <ExpandMore/>}/>
                     <Collapse in={listMenuOpen} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
                             <ImsMenuListItem text="Inventory" className={classes.nested} onClick={()=>{
