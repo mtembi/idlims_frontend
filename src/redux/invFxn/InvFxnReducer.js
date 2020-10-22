@@ -9,6 +9,7 @@ import {produce} from "immer";
 
 const initialState={
     showInventoryDialog: false,
+    showStockCardDialog: false,
     inventoryDialogType: appContants.ADD_ITEM_CONSTANT,
 
     selectedInventoryItem: null,
@@ -17,8 +18,16 @@ const initialState={
     inventoryDataList: [],
     inventoryDataError: "",
 
+    fetchStockCardLoading: false,
+    fetchStockCardData: [],
+    fetchStockCardError: '',
+
     putInventoryLoading: false,
     putInventoryError:"",
+
+    checkRefExistLoading: false,
+    checkRefExist: false,
+    checkRefExistError: '',
 };
 
 export const InvFxnReducer=(state=initialState, action)=>{
@@ -27,6 +36,25 @@ export const InvFxnReducer=(state=initialState, action)=>{
             return produce(state, (draft)=>{
                 draft.showInventoryDialog= action.payload.showInventoryDialog;
                 draft.inventoryDialogType= action.payload.inventoryDialogType;
+            });
+        case invFxnTypes.SHOW_STOCKCARD_DIALOG:
+            return produce(state, (draft)=>{
+                draft.showStockCardDialog=action.payload.show;
+            });
+        case invFxnTypes.CHECK_HAS_REF_ERROR_REQUEST:
+            return produce(state, (draft)=>{
+                draft.checkRefExistLoading=true;
+            });
+        case invFxnTypes.CHECK_HAS_REF_ERROR_SUCCESS:
+            return produce(state, (draft)=>{
+                draft.checkPartnerRefExistLoading=false;
+                draft.checkRefExist=action.payload.data
+            });
+        case invFxnTypes.CHECK_HAS_REF_ERROR_FAILURE:
+            return produce(state, (draft)=>{
+                draft.checkPartnerRefExistLoading=false;
+                draft.checkRefExist=false;
+                draft.checkRefExistError=action.payload.error
             });
         case invFxnTypes.SET_SELECTED_INVENTORY_ITEM:{
             return produce(state, (draft)=>{
@@ -49,7 +77,21 @@ export const InvFxnReducer=(state=initialState, action)=>{
                 draft.inventoryDataLoading= false;
                 draft.inventoryDataError= action.payload.error
             });
-
+        case invFxnTypes.FETCH_STOCKCARD_REQUEST:
+            return produce(state, (draft)=>{
+                draft.fetchStockCardLoading=true
+            });
+        case invFxnTypes.FETCH_STOCKCARD_SUCCESS:
+            return produce(state, (draft)=>{
+                draft.fetchStockCardLoading=false;
+                draft.fetchStockCardData=action.payload.data;
+            });
+        case invFxnTypes.FETCH_STOCKCARD_FAILURE:
+            return produce(state, (draft)=>{
+                draft.fetchStockCardLoading=false;
+                draft.fetchStockCardData=[];
+                draft.fetchStockCardError=action.payload.error
+            });
         case invFxnTypes.PUT_INVENTORY_REQUEST:
             return produce(state, (draft)=>{
                 draft.putInventoryLoading= true;

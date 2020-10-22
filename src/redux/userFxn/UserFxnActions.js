@@ -80,12 +80,8 @@ export const loginUser=(username, password)=>{
             )
             .then(
                 response=>{
-                    console.log("logging in user", response.data.accessToken);
-                    console.log("token 1: ", response);
-                    console.log("token 2: ", response.data);
-
                     if(response.data){
-                        dispatch(userLoginSuccess(JSON.stringify(response.data)));
+                        dispatch(userLoginSuccess("Bearer "+response.data));
                     }
 
                 },

@@ -1,19 +1,17 @@
 import React, {useState} from 'react';
 import {useHistory} from "react-router";
-import {Collapse, Drawer, List, ListItem, ListItemIcon, ListItemText, Divider} from "@material-ui/core";
+import {Collapse, Drawer, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 import {
     Assessment as ReportIcon,
     ExpandLess,
     ExpandMore,
     FormatAlignJustify as ListIcon,
     Home as DashIcon,
-    NavigateBeforeOutlined,
-    Settings,
-    TextRotateUpOutlined as TxnIcon,
     LocalShipping,
-    SaveAlt,
+    NavigateBeforeOutlined,
     ReplyAllRounded,
-    SystemUpdate
+    SaveAlt,
+    Settings
 } from "@material-ui/icons";
 import {sideBarToggled} from "../../redux";
 import {useDispatch, useSelector} from "react-redux";
@@ -71,20 +69,19 @@ const AppSideBar = () => {
                         history.push("/");
                         dispatch(sideBarToggled());
                     }}/>
-                    <Divider color="#00000"/>
                     <ImsMenuListItem icon={<SaveAlt/>} text="Vendor Transactions"
                                      onClick={() => {
                                          setVendTxnListOpen(!vendTxnListOpen)
                                      }}
-                                     collapseIcon={vendTxnListOpen ? <ExpandLess/> : <ExpandMore/>}/>
+                                     collapseIcon={vendTxnListOpen ? <ExpandLess color="white"/> : <ExpandMore/>}/>
                     <Collapse in={vendTxnListOpen} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
-                            <ImsMenuListItem text="Goods Receipt Note" className={classes.nested}
+                            <ImsMenuListItem text="Vendor Order" className={classes.nested}
                                              onClick={() => {
                                                  history.push("/grn");
                                                  dispatch(sideBarToggled());
                                              }} subMenu={true}/>
-                            <ImsMenuListItem text="Vendor Order" className={classes.nested}
+                            <ImsMenuListItem text="Goods Receipt Note" className={classes.nested}
                                              onClick={() => {
                                                  history.push("/grn");
                                                  dispatch(sideBarToggled());
@@ -103,6 +100,23 @@ const AppSideBar = () => {
                             <ImsMenuListItem text="Delivery Note" icon={<LocalShipping/>} className={classes.nested} onClick={() => {
                                 history.push("/grn");
                                 dispatch(sideBarToggled());
+                            }} subMenu={true}/>
+                        </List>
+                    </Collapse>
+                    <ImsMenuListItem text="Listing" onClick={()=>setListMenuOpen(!listMenuOpen)}/>
+                    <Collapse in={listMenuOpen} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+                            <ImsMenuListItem text="Inventory" className={classes.nested} onClick={()=>{
+                                history.push("/inventory");
+                                dispatch(sideBarToggled())
+                            }} subMenu={true}/>
+                            <ImsMenuListItem text="Customers" className={classes.nested} onClick={()=>{
+                                history.push("/customer");
+                                dispatch(sideBarToggled())
+                            }} subMenu={true}/>
+                            <ImsMenuListItem text="Vendors" className={classes.nested} onClick={()=>{
+                                history.push("/vendor");
+                                dispatch(sideBarToggled())
                             }} subMenu={true}/>
                         </List>
                     </Collapse>

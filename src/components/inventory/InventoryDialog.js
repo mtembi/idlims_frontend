@@ -1,18 +1,19 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {useSelector, useDispatch} from "react-redux";
-import {connect} from "react-redux";
-import {fetchUomData, putInventoryData, showInventoryDialog} from "../../redux";
+import {useDispatch, useSelector} from "react-redux";
+import {checkHasRefError, fetchInvGroup, fetchUomData, putInventoryData, showInventoryDialog} from "../../redux";
 import {Button, Checkbox, Dropdown, Form, Grid, Icon, Input, Modal, Ref, Segment, TextArea} from "semantic-ui-react";
 import SemanticDatepicker from 'react-semantic-ui-datepickers';
 import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
 
 
 const InventoryDialog = () => {
-    const dispatch=useDispatch();
-    const uomList=useSelector(state=>state.uomFxnReducer.uomDataList);
-    const uomListLoading=useSelector(state=>state.uomFxnReducer.uomDataLoading);
-    const showDialog=useSelector(state=>state.invFxnReducer.showInventoryDialog);
-    const dialogType=useSelector(state=>state.invFxnReducer.inventoryDialogType);
+    const dispatch = useDispatch();
+    const uomList = useSelector(state => state.uomFxnReducer.uomDataList);
+    const uomListLoading = useSelector(state => state.uomFxnReducer.uomDataLoading);
+    const showDialog = useSelector(state => state.invFxnReducer.showInventoryDialog);
+    const dialogType = useSelector(state => state.invFxnReducer.inventoryDialogType);
+    const checkRefExistLoading=useSelector(state=>state.invFxnReducer.checkPartnerRefExistLoading);
+    const checkRefExist=useSelector(state=>state.invFxnReducer.checkRefExist);
 
 
     const dlgRef = useRef(null);
@@ -21,53 +22,82 @@ const InventoryDialog = () => {
         console.log("Inventory dialog opened");
     };
 
-    const getUomText=(id)=>{
-        if(id && id!==0) {
+    const getUomText = (id) => {
+        if (id && id !== 0) {
             let uoms = uomList.filter(a => a.id === id);
-            return uoms[0].uomName + "("+uoms[0].uomShort+")";
-        }else
+            return uoms[0].uomName + "(" + uoms[0].uomShort + ")";
+        } else
             return "Unit of Measure";
     };
+
+    const [hasRefError, setHasRefError] = useState(false);
 
     const [invRef, setInvRef] = useState("");
     const [invName, setInvName] = useState("");
     const [invDesc, setInvDesc] = useState("");
-    const [invUom, setInvUom]=useState(null);
-    const [currQty, setCurrQty]=useState(0);
-    const [minQty, setMinQty]=useState(0);
-    const [maxQty, setMaxQty]=useState(0);
-    const [invActive, setInvActive]=useState(true);
-    const [invCreated, setInvCreated]=useState(new Date());
+    const [invUom, setInvUom] = useState(null);
+    const [currQty, setCurrQty] = useState(0);
+    const [minQty, setMinQty] = useState(0);
+    const [maxQty, setMaxQty] = useState(0);
+    const [invActive, setInvActive] = useState(true);
+    const [invCreated, setInvCreated] = useState(new Date());
 
-    const validateData=()=>{
+    const validateData = () => {
         return true;
     };
 
-    const handleSave=()=>{
-        let isValid=validateData();
-        if(typeof isValid === Boolean && isValid) {
+    const clearFields = () => {
+        setInvRef("");
+        setInvName("");
+        setInvDesc("");
+        setInvUom(null);
+        setCurrQty(0);
+        setMinQty(0);
+        setMaxQty(0);
+        setInvActive(true);
+        setInvCreated(new Date());
+    };
+
+    const generateUomObj = uom => {
+        return {
+            id: uom.id,
+            uomShort: uom.uomShort,
+            uomName: uom.uomName
+        }
+    };
+
+    const handleSave = () => {
+        let isValid = validateData();
+        console.log(typeof isValid);
+        if ((typeof isValid === "boolean") && isValid) {
+            let uom;
+            if (invUom && uomList.filter(a => a.id === invUom).length > 0) {
+                uom = generateUomObj(uomList.filter(a => a.id === invUom)[0]);
+            }
             let inv = {
                 id: null,
                 invRef: invRef,
                 invName: invName,
                 invDesc: invDesc,
-                uom: uomList.filter(a => a.id === invUom)[0],
-                createDate: invCreated,
+                uom: uom,
+                //createDate: invCreated,
                 activeStatus: invActive,
-                invMinQty: minQty,
-                invMaxQty: maxQty,
-                invCurrQty: currQty
+                minQty: minQty,
+                maxQty: maxQty,
+                currQty: currQty
             };
 
             dispatch(putInventoryData(inv));
             dispatch(showInventoryDialog(false));
-        }else{
+            clearFields();
+        } else {
             alert(isValid);
         }
     };
 
     useEffect(() => {
         dispatch(fetchUomData());
+        dispatch(fetchInvGroup());
     }, []);
 
     return (
@@ -90,10 +120,15 @@ const InventoryDialog = () => {
                         <Grid.Row columns={1}>
                             <Segment style={{width: "100%"}} secondary>
                                 <Form>
-                                    <Form.Field>
-                                        <Input style={{width: 200}} fluid size="mini"
+                                    <Form.Field error={checkRefExist}>
+                                        <Input style={{width: 200}}  size="mini"
                                                type="text" label="Ref#" value={invRef}
-                                               onChange={(e) => setInvRef(e.target.value)}/>
+                                               loading={checkRefExistLoading}
+                                               error={checkRefExist}
+                                               onChange={(e) => {
+                                                   setInvRef(e.target.value.toUpperCase());
+                                                   dispatch(checkHasRefError(e.target.value.toUpperCase()))
+                                               }}/>
                                     </Form.Field>
                                     <Form.Field>
                                         <Input fluid size="mini"
@@ -108,12 +143,13 @@ const InventoryDialog = () => {
                             </Segment>
                         </Grid.Row>
                         <Grid.Row columns={2}>
-                            <Grid.Column style={{padding:0}}>
+                            <Grid.Column style={{padding: 0}}>
                                 <Segment loading={uomListLoading ? true : false} secondary>
                                     <Form>
                                         <Form.Field>
-                                            <Dropdown fluid selection clearable deburr search labeled text={invUom===null?"Unit of Measure":getUomText(invUom)}
-                                                      options={uomList.map(uom=>{
+                                            <Dropdown fluid selection clearable deburr search labeled
+                                                      text={invUom === null ? "Unit of Measure" : getUomText(invUom)}
+                                                      options={uomList.map(uom => {
                                                           return (
                                                               {
                                                                   key: uom.id,
@@ -122,8 +158,10 @@ const InventoryDialog = () => {
                                                               }
                                                           )
                                                       })} lazyLoad wrapSelection={true}
-                                                      value={invUom} onChange={(e, {value})=>{console.log(e, value); setInvUom(value)}}
-                                                   label="Unit of Measure" />
+                                                      value={invUom} onChange={(e, {value}) => {
+                                                setInvUom(value)
+                                            }}
+                                                      label="Unit of Measure"/>
                                         </Form.Field>
                                         <Form.Field>
                                             <Input fluid size="mini"
@@ -143,19 +181,19 @@ const InventoryDialog = () => {
                                     </Form>
                                 </Segment>
                             </Grid.Column>
-                            <Grid.Column style={{paddingRight:0}}>
-                                <Segment  secondary>
+                            <Grid.Column style={{paddingRight: 0}}>
+                                <Segment secondary>
                                     <Form>
                                         <Form.Field>
                                             <Checkbox toggle checked={invActive} toggle={true}
-                                                      onChange={()=>setInvActive(!invActive)}
-                                                      label={invActive?"Active":"Disabled"}/>
+                                                      onChange={() => setInvActive(!invActive)}
+                                                      label={invActive ? "Active" : "Disabled"}/>
                                         </Form.Field>
                                         <Form.Field>
 
                                             <SemanticDatepicker label="Created" clearable={true} datePickerOnly={true}
                                                                 clearIcon={true} value={invCreated}
-                                                                onChange={(e, data)=>setInvCreated(data.value)} />
+                                                                onChange={(e, data) => setInvCreated(data.value)}/>
                                         </Form.Field>
                                     </Form>
                                 </Segment>
@@ -172,7 +210,7 @@ const InventoryDialog = () => {
                         positive
                     />
                     <Button color='black' icon="times" labelPosition="right"
-                            onClick={()=>dispatch(showInventoryDialog(false))}
+                            onClick={() => dispatch(showInventoryDialog(false))}
                             content="Cancel"/>
                 </Modal.Actions>
             </Modal>

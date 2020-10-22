@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {Dimmer, Loader, Grid, Icon, Input, Label, Modal, Segment, TextArea, Checkbox, Form, Button} from "semantic-ui-react";
-import {putPartnerData, showPartnerDialog} from "../../redux";
+import {Button, Checkbox, Dimmer, Form, Grid, Input, Label, Loader, Modal, Segment, TextArea} from "semantic-ui-react";
+import {checkPartnerNotExist, putPartnerData, showPartnerDialog} from "../../redux";
 import SemanticDatepicker from "react-semantic-ui-datepickers";
-import * as appConstants from '../../constant';
 
 const PartnerDialog = () => {
 
@@ -12,6 +11,8 @@ const PartnerDialog = () => {
     const partnerType=useSelector(state=>state.partnerFxnReducer.partnerType);
     const putLoading=useSelector(state=>state.partnerFxnReducer.putLoading);
     const putError=useSelector(state=>state.partnerFxnReducer.putError);
+    const checkRefLoading=useSelector(state=>state.partnerFxnReducer.checkPartnerRefExistLoading);
+    const checkRefExists=useSelector(state=>state.partnerFxnReducer.checkPartnerRefExistSuccess);
 
     const dispatch = useDispatch();
 
@@ -24,18 +25,41 @@ const PartnerDialog = () => {
     const [custCreated, setCustCreated] = useState(new Date());
     const [custActive, setCustActive] = useState(true);
 
+    const handleCustRefCheck=ref=>{
+            dispatch(checkPartnerNotExist(ref, partnerType));
+    };
+
+    const clearFields=()=>{
+        setCustId(null);
+        setCustRef("");
+        setCustName("");
+        setCustAddress("");
+        setCustTel("");
+        setCustEmail("");
+        setCustCreated(new Date());
+        setCustActive(true);
+    };
+
+    const validateData=()=>{
+        let errors=[];
+        if(custRef.length===0){
+            errors.push("Required: Customer reference number")
+        }
+        return errors;
+    };
+
     const handleSave=()=>{
         //validator
         let cust={
             id: custId,
-            partner_address: custAddress,
-            partner_name: custName,
-            partner_ref: custRef,
-            partner_email: custEmail,
-            partner_tel: custTel,
-            partner_type: appConstants.CUSTOMER_TYPE,
-            create_date: custCreated,
-            active_status: custActive
+            partnerAddress: custAddress,
+            partnerName: custName,
+            partnerRef: custRef,
+            partnerEmail: custEmail,
+            partnerTel: custTel,
+            partnerType: partnerType,
+            createDate: custCreated,
+            activeStatus: custActive
         };
 
         dispatch(putPartnerData(cust));
@@ -43,6 +67,7 @@ const PartnerDialog = () => {
         if(putError.length > 0){
             alert("Error found: "+putError);
         }else{
+            clearFields();
             dispatch(showPartnerDialog(false));
         }
 
@@ -59,17 +84,21 @@ const PartnerDialog = () => {
                 <Loader indeterminate>Saving Customer</Loader>
             </Dimmer>
             <Modal.Header>
-                <Icon name="cart plus"/>
                 {dialogType+" "+partnerType}
             </Modal.Header>
             <Modal.Content>
                 <Segment.Group>
-                    <Segment>
+                    <Segment secondary>
                         <Grid>
                             <Grid.Row columns={2} style={{padding: "5px"}}>
                                 <Grid.Column width={5}>
                                     <Input type="text" labelPosition="left" size="mini" value={custRef}
-                                           onChange={(e) => setCustRef(e.target.value)}>
+                                           loading={checkRefLoading}
+                                           error={checkRefExists}
+                                           onChange={
+                                               (e) => {setCustRef(e.target.value.toUpperCase());
+                                               handleCustRefCheck(e.target.value.toUpperCase())}
+                                           }>
                                         <Label basic>Ref#</Label>
                                         <input/>
                                     </Input>
@@ -131,7 +160,8 @@ const PartnerDialog = () => {
                                                         size="mini"
                                                         clearable={true}
                                                         datePickerOnly={true}
-                                                        clearIcon={true} value={custCreated}
+                                                        clearIcon={true}
+                                                        value={custCreated}
                                                         onChange={(e, data) => setCustCreated(data.value)}/>
                                 </Grid.Column>
                             </Grid.Row>

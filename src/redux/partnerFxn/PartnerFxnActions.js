@@ -1,7 +1,8 @@
 import * as custFxnTypes from './PartnerFxnTypes';
-import *as appContants from '../../constant';
+import * as appContants from '../../constant';
+import axios from 'axios';
 
-export const showPartnerDialog=(show, partner_type=appContants.CUSTOMER_TYPE, type=appContants.ADD_ITEM_CONSTANT)=>{
+export const showPartnerDialog = (show, partner_type = appContants.CUSTOMER_TYPE, type = appContants.ADD_ITEM_CONSTANT) => {
     return {
         type: custFxnTypes.SHOW_PARTNER_DIALOG,
         payload: {
@@ -12,22 +13,22 @@ export const showPartnerDialog=(show, partner_type=appContants.CUSTOMER_TYPE, ty
     }
 };
 
-export const setSelectedPartnerItem=(item)=>{
+export const setSelectedPartnerItem = (item) => {
     return {
         type: custFxnTypes.SET_SELECTED_PARTNER_ITEM,
-        payload:{
+        payload: {
             selectedItem: item
         }
     }
 };
 
-export const fetchPartnerRequest=()=>{
+export const fetchPartnerRequest = () => {
     return {
         type: custFxnTypes.FETCH_PARTNER_REQUEST
     }
 };
 
-export const fetchPartnerSuccess=partnerList=>{
+export const fetchPartnerSuccess = partnerList => {
     return {
         type: custFxnTypes.FETCH_PARTNER_SUCCESS,
         payload: {
@@ -36,48 +37,51 @@ export const fetchPartnerSuccess=partnerList=>{
     }
 };
 
-export const fetchPartnerFailure=error=>{
+export const fetchPartnerFailure = error => {
     return {
         type: custFxnTypes.FETCH_PARTNER_FAILURE,
-        payload:{
+        payload: {
             error: error
         }
     }
 };
 
-export const fetchPartnerData=(type)=>{
-    return dispatch=>{
-        dispatch(fetchPartnerRequest());
-        let dummyData=[];
-        for (var i = 0; i < 40; i++) {
-            let pt=i%4?1:2;
-            dummyData.push(
-                {
-                    id: i,
-                    partner_address: "P.O. Box "+Math.round(Math.random()*100)+" Nairobi",
-                    partner_name: (pt===1?"Customer":"Supplier")+i,
-                    partner_ref: (pt===1?"CS":"SP")+i,
-                    partner_email: (pt===1?"cust":"supp")+"email"+i+"@"+(pt===1?"cust":"supp")+"server"+i+".com",
-                    partner_tel: Math.round(Math.random()*1000000),
-                    partner_type: (pt===1?appContants.CUSTOMER_TYPE:appContants.SUPPLER_TYPE),
-                    create_date: [2019, 10, 10],
-                    active_status: true,
+export const fetchPartnerData = (type) => {
+    let api=appContants.API_URL;
+    console.log("Requested partner type",type);
+    if(type===appContants.CUSTOMER_TYPE){
+        api=api+"/api/customer/";
+    }else if(type===appContants.SUPPLER_TYPE) {
+        api=api+"/api/supplier/";
+    }
+    console.log("Api target:", api);
 
-                }
-            )
+    const request=axios.get(
+        api,
+        {
+            headers: {
+                "Authorization": localStorage.getItem('user'),
+                "Access-Control-Allow-Origin":"*"
+            }
         }
+    );
 
-        dispatch(fetchPartnerSuccess(dummyData.filter(part=>part.partner_type===type)));
+    return (dispatch)=>{
+        dispatch(fetchPartnerRequest());
+        request.then(
+            success=>dispatch(fetchPartnerSuccess(success.data)),
+            error=>dispatch(fetchPartnerFailure(error))
+        )
     }
 };
 
-export const putPartnerRequest=()=>{
+export const putPartnerRequest = () => {
     return {
         type: custFxnTypes.PUT_PARTNER_REQUEST,
     }
 };
 
-export const putPartnerSuccess=data=>{
+export const putPartnerSuccess = data => {
     return {
         type: custFxnTypes.PUT_PARTNER_SUCCESS,
         payload: {
@@ -86,18 +90,86 @@ export const putPartnerSuccess=data=>{
     }
 };
 
-export const putPartnerFailure=error=>{
+export const putPartnerFailure = error => {
     return {
         type: custFxnTypes.PUT_PARTNER_FAILURE,
-        payload:{
+        payload: {
             error: error
         }
     }
 };
 
-export const putPartnerData=partner=>{
-    return dispatch=>{
+export const putPartnerData = (partner, partnerType) => {
+    let api=appContants.API_URL+(partnerType===appContants.CUSTOMER_TYPE?"/api/customer/":"/api/supplier/");
+    return dispatch => {
         dispatch(putPartnerRequest());
-        dispatch(putPartnerSuccess(partner));
+        axios
+            .post(
+                api,
+                partner,
+                {
+                    headers: {
+                        "Authorization": localStorage.getItem('user').replace(/"/g, ''),
+                        'Access-Control-Allow-Origin': '*',
+                    }
+                }
+            )
+            .then(response => {
+                    console.log(response);
+                    dispatch(putPartnerSuccess(response.data));
+                },
+                error => {
+                    console.log(error);
+                    dispatch(putPartnerFailure(error));
+                });
+
+
+
+    }
+};
+
+export const checkPartnerRefExistRequest=()=>{
+    return {
+        type: custFxnTypes.CHECK_PARTNER_REF_EXIST_REQUEST
+    }
+};
+export const checkPartnerRefExistSuccess=isExist=>{
+    return {
+        type: custFxnTypes.CHECK_PARTNER_REF_EXIST_SUCCESS,
+        payload: {
+            isExist: isExist
+        }
+    }
+};
+export const checkPartnerRefExistError=error=>{
+    return {
+        type: custFxnTypes.CHECK_PARTNER_REF_EXIST_SUCCESS,
+        payload: {
+            error
+        }
+    }
+};
+
+export const checkPartnerNotExist=(partnerRef, partnerType)=>{
+    const api=appContants.API_URL+(
+        partnerType===appContants.CUSTOMER_TYPE ? "/api/customer/checkRefExist/" : "/api/supplier/checkRefExist");
+    return dispatch=>{
+        dispatch(checkPartnerRefExistRequest());
+        axios.post(
+            api,
+            {
+                partnerRef: partnerRef,
+                partnerType: partnerType
+            },
+            {
+                headers: {
+                    "Authorization": localStorage.getItem('user'),
+                    'Access-Control-Allow-Origin': '*',
+                }
+            }
+        ).then(
+            response=>dispatch(checkPartnerRefExistSuccess(response.data)),
+            error=>{dispatch(checkPartnerRefExistError(error))}
+        )
     }
 };

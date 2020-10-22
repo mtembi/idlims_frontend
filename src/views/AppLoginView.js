@@ -7,7 +7,7 @@ import {useHistory} from "react-router";
 const AppLoginView = () => {
     const dispatch = useDispatch();
     const history=useHistory();
-    const isLoggingIn = useSelector(state => state.userFxnReducer.isLoggingIn);
+    //const isLoggingIn = useSelector(state => state.userFxnReducer.isLoggingIn);
     const isLoggedIn=useSelector(state=>state.userFxnReducer.isLoggedIn);
     const hasLoginError = useSelector(state => state.userFxnReducer.loginError);
 
@@ -57,7 +57,7 @@ const AppLoginView = () => {
                                 </Card.Description>
                             </Card.Content>
                             <Card.Content extra>
-                                <Button as="submit" primary onClick={handleLogin} onKeyPress={handleLogin}>Login</Button>
+                                <Button as="button" type="button" primary onClick={handleLogin} onKeyPress={handleLogin}>Login</Button>
                             </Card.Content>
                         </Card>
                     </Card.Group>

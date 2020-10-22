@@ -17,6 +17,10 @@ const initialState={
 
     putLoading: false,
     putError:"",
+
+    checkPartnerRefExistLoading: false,
+    checkPartnerRefExistSuccess:false,
+    checkPartnerRefExistErorr:""
 };
 
 export const PartnerFxnReducer=(state=initialState, action)=>{
@@ -65,6 +69,21 @@ export const PartnerFxnReducer=(state=initialState, action)=>{
                 draft.putLoading= false;
                 draft.putData= null;
                 draft.putError=action.payload.error;
+            });
+
+        case partnerFxnTypes.CHECK_PARTNER_REF_EXIST_REQUEST:
+            return produce(state, (draft)=>{
+                draft.checkPartnerRefExistLoading=true;
+            });
+        case partnerFxnTypes.CHECK_PARTNER_REF_EXIST_SUCCESS:
+            return produce(state, (draft)=>{
+                draft.checkPartnerRefExistLoading=false;
+                draft.checkPartnerRefExistSuccess=action.payload.isExist;
+            });
+        case partnerFxnTypes.CHECK_PARTNER_REF_EXIST_FAILURE:
+            return produce(state, (draft)=>{
+                draft.checkPartnerRefExistLoading=false;
+                draft.checkPartnerRefExistError=action.payload.error;
             });
         default: return state;
     }

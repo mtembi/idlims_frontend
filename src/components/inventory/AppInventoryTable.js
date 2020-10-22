@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
     ColumnDirective,
     ColumnsDirective,
@@ -14,22 +14,40 @@ import {
     VirtualScroll
 } from "@syncfusion/ej2-react-grids";
 import * as appConstants from '../../constant';
-import {fetchInventoryData, showInventoryDialog, setSelectedInventoryItem, showUomDialog} from "../../redux";
-import {connect, useSelector} from "react-redux";
+import {fetchInventoryData, setSelectedInventoryItem, showInventoryDialog} from "../../redux";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchStockcard, showStockCardDialog} from "../../redux/invFxn/InvFxnActions";
+import StockCardDialog from "./StockcardDialog";
 
-const AppInventoryTable = ({toggleInventoryDialog, showUomDialog, setSelectedInventoryItem, invReducer, fetchInventoryData}) => {
+const AppInventoryTable = () => {
+    const dispatch = useDispatch();
+
+    const inventoryData = useSelector(state => state.invFxnReducer.inventoryDataList);
+    const showUomDialog = useSelector(state => state.uomFxnReducer.showUomDialog);
+    const inventoryDataLoading = useSelector(state => state.invFxnReducer.inventoryDataLoading);
+
+    const [selectedItem, setSelectedItem] = useState(null);
+
     const gridRef = useRef(null);
     const toolbarOptions = [
         {text: 'Add', id: "addInventory"},
-        {text: 'Edit', id: "editInventory"},
+        {text: 'Edit', id: "editInventory", disabled: true},
+        {text: "Stockcard", id: "invStockcard", disabled: true},
         {text: 'UoM', id: "mngUomId"},
         {text: 'ExcelExport', id: "exportInventoryList"},
         {text: 'Search'}
     ];
     useEffect(() => {
-        setTimeout(fetchInventoryData(), 2000);
-    }, []);
-
+        dispatch(fetchInventoryData());
+    }, [dispatch]);
+    useEffect(() => {
+        if (inventoryDataLoading && gridRef) {
+            gridRef.current.showSpinner();
+        } else if (!inventoryDataLoading && gridRef) {
+            gridRef.current.refresh();
+            gridRef.current.hideSpinner();
+        }
+    }, [dispatch, inventoryDataLoading]);
 
     const pageSettings = {
         pageCount: 4,
@@ -43,17 +61,13 @@ const AppInventoryTable = ({toggleInventoryDialog, showUomDialog, setSelectedInv
         model: 'Row'
     };
 
-    const invListUpd = useSelector(state => state.invFxnReducer.putInventoryLoading);
-    useEffect(() => {
-        console.log("Use Effect", "Inv List Changed");
-    });
-
     const handleRowSelected = args => {
         if (gridRef) {
             const selectedRecords = gridRef.current.getSelectedRecords();
             if (selectedRecords.length > 0) {
                 setSelectedInventoryItem(selectedRecords[0]);
                 gridRef.current.toolbarModule.enableItems(['editInventory'], true);
+                gridRef.current.toolbarModule.enableItems(['invStockcard'], true);
             }
         }
     };
@@ -61,24 +75,33 @@ const AppInventoryTable = ({toggleInventoryDialog, showUomDialog, setSelectedInv
         setSelectedInventoryItem(null);
         if (gridRef) {
             gridRef.current.toolbarModule.enableItems(['editInventory'], false);
+            gridRef.current.toolbarModule.enableItems(['invStockcard'], false);
         }
     };
     const handleToolbarClick = (args) => {
         if (args.item.id === "addInventory") {
-            toggleInventoryDialog(true, appConstants.ADD_ITEM_CONSTANT);
+            dispatch(showInventoryDialog(true, appConstants.ADD_ITEM_CONSTANT));
+        }
+
+        if (args.item.id === "invStockcard") {
+            if (gridRef.current.getSelectedRecords().length > 0) {
+                dispatch(setSelectedInventoryItem(gridRef.current.getSelectedRecords()[0]));
+                dispatch(fetchStockcard(gridRef.current.getSelectedRecords()[0]));
+                dispatch(showStockCardDialog(true));
+            }
         }
 
         if (gridRef && args.item.id === "editInventory") {
             if (gridRef.current.getSelectedRecords().length > 0) {
                 setSelectedInventoryItem(gridRef.current.getSelectedRecords()[0]);
-                toggleInventoryDialog(true, appConstants.EDIT_ITEM_CONSTANT);
+                dispatch(showInventoryDialog(true, appConstants.EDIT_ITEM_CONSTANT));
             } else {
                 alert("Select Item to edit");
             }
         }
 
         if (gridRef && args.item.id === "mngUomId") {
-            showUomDialog(true, appConstants.ADD_ITEM_CONSTANT);
+            dispatch(showUomDialog(true, appConstants.ADD_ITEM_CONSTANT));
         }
 
         if (gridRef && args.item.id === "exportInventoryList") {
@@ -86,12 +109,32 @@ const AppInventoryTable = ({toggleInventoryDialog, showUomDialog, setSelectedInv
         }
     };
 
+    const dateTemplate = args => {
+        if (args.createDate)
+            return <div>{new Date(args.createDate[0], args.createDate[1], args.createDate[2]).toDateString()}</div>
+        else
+            return <div></div>
+    };
+
+    const uomTemplate = args => {
+        if (args.uom)
+            return <div>{args.uom.uomShort}</div>
+        else
+            return <div></div>
+    };
+
+    const inventoryGroupTemplate = args => {
+        if (args.inventoryGroup)
+            return <div>{args.inventoryGroup.groupName}</div>
+        else
+            return <div></div>
+    };
+
     return (
-        invReducer.inventoryDataLoading ?
-            <div>Loading data</div> :
+        <>
             <GridComponent
                 ref={gridRef}
-                dataSource={invReducer.inventoryDataList}
+                dataSource={inventoryData}
                 pageSettings={pageSettings}
                 allowPaging={false}
                 rowSelected={handleRowSelected}
@@ -110,32 +153,21 @@ const AppInventoryTable = ({toggleInventoryDialog, showUomDialog, setSelectedInv
                     <ColumnDirective field="id" headerText="Id" width="80" isPrimaryKey={true}/>
                     <ColumnDirective field="invRef" headerText="Ref#"/>
                     <ColumnDirective field="invName" headerText="Name"/>
-                    <ColumnDirective field="uom" headerText="Uom"/>
-                    <ColumnDirective field="invCurrQty" textAlign="Right" headerText="Quantity"/>
-                    <ColumnDirective field="invMinQty" textAlign="Right" headerText="Min. Qty"/>
-                    <ColumnDirective field="invMaxQty" textAlign="Right" headerText="Max. Qty"/>
-                    <ColumnDirective field="createDate" headerText="Created"/>
+                    <ColumnDirective field="uom" width={100} headerText="Uom" template={uomTemplate}/>
+                    <ColumnDirective field="currQty" textAlign="Right" headerText="Quantity"/>
+                    <ColumnDirective field="minQty" textAlign="Right" headerText="Min. Qty"/>
+                    <ColumnDirective field="maxQty" textAlign="Right" headerText="Max. Qty"/>
+                    <ColumnDirective field="inventoryGroup" headerText="Group" template={inventoryGroupTemplate}/>
+                    <ColumnDirective field="createDate" headerText="Created" template={dateTemplate}/>
                     <ColumnDirective field="activeStatus" headerText="Status"/>
                 </ColumnsDirective>
                 <Inject
                     services={[Page, Selection, Toolbar, Search, ExcelExport, VirtualScroll, Sort, Filter]}/>
             </GridComponent>
+            <StockCardDialog/>
+        </>
     )
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-        toggleInventoryDialog: (show, type) => dispatch(showInventoryDialog(show, type)),
-        fetchInventoryData: () => dispatch(fetchInventoryData()),
-        setSelectedInventoryItem: item => dispatch(setSelectedInventoryItem(item)),
-        showUomDialog: (show, type) => dispatch(showUomDialog(show, type)),
-    }
-};
 
-const mapStateToProps = state => {
-    return {
-        invReducer: state.invFxnReducer,
-    }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AppInventoryTable);
+export default AppInventoryTable;

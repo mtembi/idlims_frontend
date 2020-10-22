@@ -1,6 +1,4 @@
 import React from 'react';
-import {useDispatch, useSelector} from "react-redux";
-import {showNotification} from "../redux";
 import {Segment} from "semantic-ui-react";
 import GrnTable from "../components/inboundDel/GrnTable";
 
@@ -13,13 +11,6 @@ import GrnTable from "../components/inboundDel/GrnTable";
 
 
 const AppGrnView = () => {
-    const showDialog = useSelector(state => state.txnFxnReducer.showDialog);
-
-    const dispatch = useDispatch();
-
-    const handleToastMessage = () => {
-        dispatch(showNotification("Testing ", "error"));
-    };
 
     return (
         <Segment.Group raised>

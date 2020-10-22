@@ -41,7 +41,8 @@ const AppStockCardTable = () => {
         }
     }, []);
     const handleRowSelected = () => {
-
+        //TODO remove this; removes browser warning
+        console.log(selectedRecord);
     };
     const handleRowDeselect = () => {
         selectedRecord = null;

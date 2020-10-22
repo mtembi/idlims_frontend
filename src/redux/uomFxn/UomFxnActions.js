@@ -1,4 +1,6 @@
 import * as uomFxnTypes from './UomFxnTypes';
+import * as appConstants from '../../constant';
+import axios from 'axios';
 
 export const showUomDialog=(show, type="add")=>{
     return {
@@ -46,13 +48,25 @@ export const fetchUomFailure=error=>{
 export const fetchUomData=()=>{
     return dispatch=>{
         dispatch(fetchUomRequest());
-        let dummyData=[
-            {id: 1, uomName: "Kilogram", uomShort: "Kg"},
-            {id: 2, uomName: "Meter", uomShort: "M"},
-            {id: 3, uomName: "Pieces", uomShort: "Pcs"},
-            {id: 4, uomName: "Liters", uomShort: "Lts"}
-        ];
-        dispatch(fetchUomSuccess(dummyData));
+        axios.get(
+            appConstants.API_URL+"/api/uom/",
+            {
+                headers:{
+                    'Access-Control-Allow-Origin': '*',
+                    "Authorization": localStorage.getItem("user")
+                }
+            }
+        ).then(
+            res=>{
+                console.log("Uom fetch", res);
+                dispatch(fetchUomSuccess(res.data));
+            },
+            err=>{
+                console.log("Uom fetch", err);
+                dispatch(fetchUomFailure(err));
+            }
+        );
+
     }
 };
 

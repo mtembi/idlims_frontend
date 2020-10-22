@@ -1,32 +1,30 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {fetchPartnerData, setSelectedPartnerItem, showPartnerDialog} from "../../redux";
 import * as appConstants from "../../constant";
-import {ColumnDirective, ColumnsDirective, GridComponent, Inject, Page, Selection, Toolbar, Search, ExcelExport} from "@syncfusion/ej2-react-grids";
+import {
+    ColumnDirective,
+    ColumnsDirective,
+    ExcelExport,
+    GridComponent,
+    Inject,
+    Page,
+    Search,
+    Selection,
+    Toolbar
+} from "@syncfusion/ej2-react-grids";
 
 
 const AppSupplierTable=()=>{
     const gridRef = useRef(null);
-    const partnerDataList = useSelector(state => state.partnerFxnReducer.fetchDataList);
-    const fetchLoading = useSelector(state => state.partnerFxnReducer.fetchDataLoading);
-
-
     const dispatch = useDispatch();
-
-    const [selectedItem, setSelectedItem] = useState(null);
-
-    useEffect(() => {
-        setTimeout(dispatch(fetchPartnerData(appConstants.SUPPLER_TYPE)), 2000);
-    }, []);
-
-
-    const pageSettings = {
-        pageCount: 4,
-        pageSizes: true
-    };
-
+    const customerData = useSelector(state => state.partnerFxnReducer.fetchDataList);
     const filterType = {
         type: "Excel"
+    };
+    const selectionSetting = {
+        type: 'Single',
+        model: 'Row'
     };
 
     const toolbarOptions = [
@@ -36,31 +34,19 @@ const AppSupplierTable=()=>{
         {text: 'Search'}
     ];
 
-    const handleRowSelected = args => {
-        if (gridRef) {
-            let selectedRecords = gridRef.current.getSelectedRecords();
-            console.log("Selected recs",selectedRecords);
-            if (selectedRecords.length > 0) {
-                let selItem=selectedRecords[0];
-                setSelectedItem(selItem);
-                gridRef.current.toolbarModule.enableItems(["editMenuId"], true);
-            }
-        }
+    useEffect(() => {
+        dispatch(fetchPartnerData(appConstants.SUPPLER_TYPE))
+    }, [gridRef, dispatch]);
+
+    const dateTemplate=args=>{
+        return <div>{new Date(args.createDate[0], args.createDate[1], args.createDate[2]).toDateString()}</div>
     };
 
-    const handleRowDeselect = args => {
-        setSelectedItem(null);
-        if (gridRef) {
-            gridRef.current.toolbarModule.enableItems(["editMenuId"], false);
-        }
+    const statusTemplate=args=>{
+        return <div><input style={{border: "none"}} type="checkbox" checked={args.activeStatus} disabled={true}/></div>
     };
 
-    const selectionSetting = {
-        type: 'Single',
-        model: 'Row'
-    };
-
-    const handleToolbarClick = args => {
+    const handleToolbarClick=args=>{
         if (args.item.id === "addMenuId") {
             dispatch(showPartnerDialog(true, appConstants.SUPPLER_TYPE, appConstants.ADD_ITEM_CONSTANT));
         }
@@ -76,41 +62,30 @@ const AppSupplierTable=()=>{
     };
 
     return (
-        fetchLoading ?
-            <div>Loading data</div> :
-            <div className="control-pane">
-                <div className="control-section">
-                    <GridComponent
-                        ref={gridRef}
-                        dataSource={partnerDataList}
-                        pageSettings={pageSettings}
-                        allowPaging={false}
-                        height="400"
-                        rowSelected={handleRowSelected}
-                        allowSorting={true}
-                        rowDeselected={handleRowDeselect}
-                        toolbar={toolbarOptions}
-                        toolbarClick={handleToolbarClick}
-                        enableColumnVirtualization={true}
-                        enableVirtualization={false}
-                        filterSettings={filterType}
-                        allowFiltering={true}
-                        allowExcelExport={true}
-                        selectionSettings={selectionSetting}>
-                        <Inject services={[Page, Selection, Toolbar, Search, ExcelExport]}/>
-                        <ColumnsDirective>
-                            <ColumnDirective field="id" headerText="Id" width="80" isPrimaryKey={true}/>
-                            <ColumnDirective field="partner_ref" headerText="Ref#"/>
-                            <ColumnDirective field="partner_name" headerText="Name"/>
-                            <ColumnDirective field="partner_email" headerText="@"/>
-                            <ColumnDirective field="partner_tel" headerText="Tel"/>
-                            <ColumnDirective field="active_status" headerText="Status"/>
-                            <ColumnDirective field="create_date" headerText="Date"/>
-                        </ColumnsDirective>
-
-                    </GridComponent>
-                </div>
-            </div>
+        <GridComponent
+            dataSource={customerData}
+            allowPaging={false}
+            height="400"
+            enableColumnVirtualization={true}
+            enableVirtualization={false}
+            filterSettings={filterType}
+            allowFiltering={true}
+            allowExcelExport={true}
+            selectionSettings={selectionSetting}
+            toolbar={toolbarOptions}
+            toolbarClick={handleToolbarClick}
+            ref={gridRef}>
+            <Inject services={[Page, Selection, Toolbar, Search, ExcelExport]}/>
+            <ColumnsDirective>
+                <ColumnDirective field="id" headerText="Id" isPrimaryKey={true} visible={false}/>
+                <ColumnDirective field="partnerRef" headerText="Ref#"/>
+                <ColumnDirective field="partnerName" headerText="Name"/>
+                <ColumnDirective field="partnerEmail" headerText="@"/>
+                <ColumnDirective field="partnerTel" headerText="Tel"/>
+                <ColumnDirective field="activeStatus" headerText="Status" template={statusTemplate} />
+                <ColumnDirective field="createDate" headerText="Created" template={dateTemplate} />
+            </ColumnsDirective>
+        </GridComponent>
     )
 };
 
