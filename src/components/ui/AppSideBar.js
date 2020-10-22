@@ -120,62 +120,6 @@ const AppSideBar = () => {
                             }} subMenu={true}/>
                         </List>
                     </Collapse>
-                    <ListItem button onClick={() => {
-                        setListMenuOpen(!listMenuOpen)
-                    }}>
-                        <ListItemIcon>
-                            <ListIcon/>
-                        </ListItemIcon>
-                        <ListItemText primary={"Lists"}/>
-                        {listMenuOpen ? <ExpandLess/> : <ExpandMore/>}
-                    </ListItem>
-                    <Collapse in={listMenuOpen} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
-                            <ListItem button className={classes.nested} onClick={() => {
-                                history.push("/customer");
-                                dispatch(sideBarToggled());
-                            }}>
-                                <ListItemIcon>
-
-                                </ListItemIcon>
-                                <ListItemText primary="Customers"/>
-                            </ListItem>
-                            <ListItem button className={classes.nested} onClick={() => {
-                                history.push("supplier");
-                                dispatch(sideBarToggled())
-                            }}>
-                                <ListItemIcon>
-
-                                </ListItemIcon>
-                                <ListItemText primary="Suppliers"/>
-                            </ListItem>
-                            <ListItem button className={classes.nested} onClick={() => {
-                                history.push("/inventory");
-                                dispatch(sideBarToggled())
-                            }}>
-                                <ListItemIcon>
-
-                                </ListItemIcon>
-                                <ListItemText primary="Inventory"/>
-                            </ListItem>
-                        </List>
-                    </Collapse>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <Settings component="svg"/>
-                        </ListItemIcon>
-                        <ListItemText primary={"Setup"}/>
-                    </ListItem>
-                    <ListItem button onClick={() => setReportMenuOpen(!reportMenuOpen)}>
-                        <ListItemIcon>
-                            <ReportIcon component="svg"/>
-                        </ListItemIcon>
-                        <ListItemText primary={"Reports"}/>
-                        {reportMenuOpen ? <ExpandLess/> : <ExpandMore/>}
-                    </ListItem>
-                    <Collapse in={reportMenuOpen} timeout="auto" unmountOnExit>
-
-                    </Collapse>
                 </List>
             </div>
         </Drawer>
