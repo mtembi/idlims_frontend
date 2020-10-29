@@ -1,9 +1,17 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {checkHasRefError, fetchInvGroup, fetchUomData, putInventoryData, showInventoryDialog} from "../../redux";
+import {
+    checkHasRefError,
+    fetchInvGroup,
+    fetchUomData,
+    putInventoryData,
+    showInventoryDialog,
+    showUomDialog
+} from "../../redux";
 import {Button, Checkbox, Dropdown, Form, Grid, Icon, Input, Modal, Ref, Segment, TextArea} from "semantic-ui-react";
 import SemanticDatepicker from 'react-semantic-ui-datepickers';
 import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
+import * as appConstants from "../../constant";
 
 
 const InventoryDialog = () => {
@@ -12,8 +20,8 @@ const InventoryDialog = () => {
     const uomListLoading = useSelector(state => state.uomFxnReducer.uomDataLoading);
     const showDialog = useSelector(state => state.invFxnReducer.showInventoryDialog);
     const dialogType = useSelector(state => state.invFxnReducer.inventoryDialogType);
-    const checkRefExistLoading=useSelector(state=>state.invFxnReducer.checkPartnerRefExistLoading);
-    const checkRefExist=useSelector(state=>state.invFxnReducer.checkRefExist);
+    const checkRefExistLoading = useSelector(state => state.invFxnReducer.checkPartnerRefExistLoading);
+    const checkRefExist = useSelector(state => state.invFxnReducer.checkRefExist);
 
 
     const dlgRef = useRef(null);
@@ -29,8 +37,6 @@ const InventoryDialog = () => {
         } else
             return "Unit of Measure";
     };
-
-    const [hasRefError, setHasRefError] = useState(false);
 
     const [invRef, setInvRef] = useState("");
     const [invName, setInvName] = useState("");
@@ -98,7 +104,7 @@ const InventoryDialog = () => {
     useEffect(() => {
         dispatch(fetchUomData());
         dispatch(fetchInvGroup());
-    }, []);
+    }, [dispatch]);
 
     return (
         <Ref innerRef={dlgRef}>
@@ -121,7 +127,7 @@ const InventoryDialog = () => {
                             <Segment style={{width: "100%"}} secondary>
                                 <Form>
                                     <Form.Field error={checkRefExist}>
-                                        <Input style={{width: 200}}  size="mini"
+                                        <Input style={{width: 200}} size="mini"
                                                type="text" label="Ref#" value={invRef}
                                                loading={checkRefExistLoading}
                                                error={checkRefExist}
@@ -146,23 +152,29 @@ const InventoryDialog = () => {
                             <Grid.Column style={{padding: 0}}>
                                 <Segment loading={uomListLoading ? true : false} secondary>
                                     <Form>
-                                        <Form.Field>
-                                            <Dropdown fluid selection clearable deburr search labeled
-                                                      text={invUom === null ? "Unit of Measure" : getUomText(invUom)}
-                                                      options={uomList.map(uom => {
-                                                          return (
-                                                              {
+                                        <Form.Group inline unstackable>
+                                            <Form.Field>
+                                                <Dropdown fluid selection clearable deburr search labeled
+                                                          searchInput={{type: 'uomName'}}
+                                                          text={invUom === null ? "Unit of Measure" : getUomText(invUom)}
+                                                          options={uomList.map(uom => {
+                                                              return ({
                                                                   key: uom.id,
                                                                   value: uom.id,
                                                                   text: uom.uomName
-                                                              }
-                                                          )
-                                                      })} lazyLoad wrapSelection={true}
-                                                      value={invUom} onChange={(e, {value}) => {
-                                                setInvUom(value)
-                                            }}
-                                                      label="Unit of Measure"/>
-                                        </Form.Field>
+                                                              })
+                                                          }).sort((a,b)=>a.uomName===b.uomName?0:(a.uomName < b.uomName?1:-1))}
+                                                          lazyLoad wrapSelection={true}
+                                                          value={invUom}
+                                                          onChange={(e, {value}) => {
+                                                              setInvUom(value)
+                                                          }}
+                                                          label="Unit of Measure"/>
+                                            </Form.Field>
+                                            <Form.Field>
+                                                <Button circular icon="plus" size="mini" onClick={e=>dispatch(showUomDialog(true, appConstants.ADD_ITEM_CONSTANT))}/>
+                                            </Form.Field>
+                                        </Form.Group>
                                         <Form.Field>
                                             <Input fluid size="mini"
                                                    type="number" label="Available Quantity" value={currQty}
@@ -185,7 +197,7 @@ const InventoryDialog = () => {
                                 <Segment secondary>
                                     <Form>
                                         <Form.Field>
-                                            <Checkbox toggle checked={invActive} toggle={true}
+                                            <Checkbox toggle checked={invActive}
                                                       onChange={() => setInvActive(!invActive)}
                                                       label={invActive ? "Active" : "Disabled"}/>
                                         </Form.Field>

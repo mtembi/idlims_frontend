@@ -1,5 +1,5 @@
 import * as txnFxnTypes from './TxnFxnTypes';
-import *as appContants from '../../constant';
+import * as appContants from '../../constant';
 
 export const showTxnDialog=(show, doc_type, type=appContants.ADD_ITEM_CONSTANT)=>{
     return {

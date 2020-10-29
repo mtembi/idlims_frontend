@@ -76,7 +76,7 @@ const AppSideBar = () => {
                         <List component="div" disablePadding>
                             <ImsMenuListItem text="Vendor Order" className={classes.nested}
                                              onClick={() => {
-                                                 history.push("/grn");
+                                                 history.push("/vendorder");
                                                  dispatch(sideBarToggled());
                                              }} subMenu={true}/>
                             <ImsMenuListItem text="Goods Receipt Note" className={classes.nested}
@@ -115,6 +115,16 @@ const AppSideBar = () => {
                             }} subMenu={true}/>
                             <ImsMenuListItem text="Vendors" className={classes.nested} onClick={()=>{
                                 history.push("/vendor");
+                                dispatch(sideBarToggled())
+                            }} subMenu={true}/>
+                        </List>
+                    </Collapse>
+                    <ImsMenuListItem icon={<ArtTrack/>} text="Reports" onClick={()=>setReportMenuOpen(!reportMenuOpen)}
+                                     collapseIcon={reportMenuOpen ? <ExpandLess/> : <ExpandMore/>}/>
+                    <Collapse in={reportMenuOpen} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+                            <ImsMenuListItem text="Stockcard" className={classes.nested} onClick={()=>{
+                                history.push("/");
                                 dispatch(sideBarToggled())
                             }} subMenu={true}/>
                         </List>

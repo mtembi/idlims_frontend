@@ -3,6 +3,7 @@ import {ColumnDirective, ColumnsDirective, GridComponent, Page, Selection, Toolb
 import {useDispatch, useSelector} from "react-redux";
 import {fetchPartnerData, setSelectedPartnerItem, showPartnerDialog} from "../../redux";
 import * as appConstants from "../../constant";
+import * as tableConsts from '../templates/TableTemplates';
 
 const CustomerTable = () => {
     const gridRef = useRef();
@@ -22,19 +23,11 @@ const CustomerTable = () => {
         {text: 'Search'}
     ];
 
-    const dateFormatOption={type: 'date', format:'dd/MM/yyyy'};
+    //const dateFormatOption={type: 'date', format:'dd/MM/yyyy'};
 
     useEffect(() => {
         dispatch(fetchPartnerData(appConstants.CUSTOMER_TYPE))
     }, [gridRef, dispatch]);
-
-    const dateTemplate=args=>{
-        return <div>{new Date(args.createDate[0], args.createDate[1], args.createDate[2]).toDateString()}</div>
-    };
-
-    const statusTemplate=args=>{
-        return <div><input style={{border: "none"}} type="checkbox" checked={args.activeStatus} disabled={true}/></div>
-    };
 
     const handleToolbarClick=args=>{
         if (args.item.id === "addMenuId") {
@@ -72,8 +65,8 @@ const CustomerTable = () => {
                     <ColumnDirective field="partnerName" headerText="Name"/>
                     <ColumnDirective field="partnerEmail" headerText="@"/>
                     <ColumnDirective field="partnerTel" headerText="Tel"/>
-                    <ColumnDirective field="activeStatus" headerText="Status" template={statusTemplate} />
-                    <ColumnDirective field="createDate" headerText="Created" template={dateTemplate} />
+                    <ColumnDirective field="activeStatus" headerText="Status" template={tableConsts.statusTemplate} />
+                    <ColumnDirective field="createDate" headerText="Created" template={tableConsts.dateTemplate} />
                 </ColumnsDirective>
             </GridComponent>
     )

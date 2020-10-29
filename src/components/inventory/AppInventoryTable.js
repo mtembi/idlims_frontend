@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
     ColumnDirective,
     ColumnsDirective,
@@ -14,19 +14,18 @@ import {
     VirtualScroll
 } from "@syncfusion/ej2-react-grids";
 import * as appConstants from '../../constant';
-import {fetchInventoryData, setSelectedInventoryItem, showInventoryDialog} from "../../redux";
+import * as TableTemplates from '../templates/TableTemplates';
+import {fetchInventoryData, setSelectedInventoryItem, showInventoryDialog, showUomDialog} from "../../redux";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchStockcard, showStockCardDialog} from "../../redux/invFxn/InvFxnActions";
 import StockCardDialog from "./StockcardDialog";
+import UomDialog from "./UomDialog";
 
 const AppInventoryTable = () => {
     const dispatch = useDispatch();
 
     const inventoryData = useSelector(state => state.invFxnReducer.inventoryDataList);
-    const showUomDialog = useSelector(state => state.uomFxnReducer.showUomDialog);
     const inventoryDataLoading = useSelector(state => state.invFxnReducer.inventoryDataLoading);
-
-    const [selectedItem, setSelectedItem] = useState(null);
 
     const gridRef = useRef(null);
     const toolbarOptions = [
@@ -40,6 +39,7 @@ const AppInventoryTable = () => {
     useEffect(() => {
         dispatch(fetchInventoryData());
     }, [dispatch]);
+
     useEffect(() => {
         if (inventoryDataLoading && gridRef) {
             gridRef.current.showSpinner();
@@ -48,18 +48,6 @@ const AppInventoryTable = () => {
             gridRef.current.hideSpinner();
         }
     }, [dispatch, inventoryDataLoading]);
-
-    const pageSettings = {
-        pageCount: 4,
-        pageSizes: true
-    };
-    const filterType = {
-        type: 'Excel'
-    };
-    const selectionSetting = {
-        type: 'Single',
-        model: 'Row'
-    };
 
     const handleRowSelected = args => {
         if (gridRef) {
@@ -78,6 +66,7 @@ const AppInventoryTable = () => {
             gridRef.current.toolbarModule.enableItems(['invStockcard'], false);
         }
     };
+
     const handleToolbarClick = (args) => {
         if (args.item.id === "addInventory") {
             dispatch(showInventoryDialog(true, appConstants.ADD_ITEM_CONSTANT));
@@ -109,62 +98,42 @@ const AppInventoryTable = () => {
         }
     };
 
-    const dateTemplate = args => {
-        if (args.createDate)
-            return <div>{new Date(args.createDate[0], args.createDate[1], args.createDate[2]).toDateString()}</div>
-        else
-            return <div></div>
-    };
-
-    const uomTemplate = args => {
-        if (args.uom)
-            return <div>{args.uom.uomShort}</div>
-        else
-            return <div></div>
-    };
-
-    const inventoryGroupTemplate = args => {
-        if (args.inventoryGroup)
-            return <div>{args.inventoryGroup.groupName}</div>
-        else
-            return <div></div>
-    };
-
     return (
         <>
             <GridComponent
                 ref={gridRef}
                 dataSource={inventoryData}
-                pageSettings={pageSettings}
-                allowPaging={false}
+                pageSettings={TableTemplates.pageSettings}
+                allowPaging={TableTemplates.allowPaging}
                 rowSelected={handleRowSelected}
                 height="350"
                 rowDeselected={handleRowDeselect}
-                allowSorting={true}
+                allowSorting={TableTemplates.allowSorting}
                 toolbar={toolbarOptions}
                 toolbarClick={handleToolbarClick}
-                enableColumnVirtualization={true}
-                enableVirtualization={true}
-                filterSettings={filterType}
-                allowFiltering={true}
-                allowExcelExport={true}
-                selectionSettings={selectionSetting}>
+                enableColumnVirtualization={TableTemplates.columnVirtualization}
+                enableVirtualization={TableTemplates.enableVirtual}
+                filterSettings={TableTemplates.filterSettings}
+                allowFiltering={TableTemplates.allowFiltering}
+                allowExcelExport={TableTemplates.allowExcelExport}
+                selectionSettings={TableTemplates.selectionSettings}>
                 <ColumnsDirective>
-                    <ColumnDirective field="id" headerText="Id" width="80" isPrimaryKey={true}/>
+                    <ColumnDirective field="id" headerText="Id" width="80" isPrimaryKey={true} visible={false}/>
                     <ColumnDirective field="invRef" headerText="Ref#"/>
                     <ColumnDirective field="invName" headerText="Name"/>
-                    <ColumnDirective field="uom" width={100} headerText="Uom" template={uomTemplate}/>
+                    <ColumnDirective field="uom" width={100} headerText="Uom" template={TableTemplates.uomTemplate}/>
                     <ColumnDirective field="currQty" textAlign="Right" headerText="Quantity"/>
                     <ColumnDirective field="minQty" textAlign="Right" headerText="Min. Qty"/>
                     <ColumnDirective field="maxQty" textAlign="Right" headerText="Max. Qty"/>
-                    <ColumnDirective field="inventoryGroup" headerText="Group" template={inventoryGroupTemplate}/>
-                    <ColumnDirective field="createDate" headerText="Created" template={dateTemplate}/>
+                    <ColumnDirective field="inventoryGroup" headerText="Group" template={TableTemplates.inventoryGroupTemplate}/>
+                    <ColumnDirective field="createDate" headerText="Created" template={TableTemplates.dateTemplate}/>
                     <ColumnDirective field="activeStatus" headerText="Status"/>
                 </ColumnsDirective>
                 <Inject
                     services={[Page, Selection, Toolbar, Search, ExcelExport, VirtualScroll, Sort, Filter]}/>
             </GridComponent>
             <StockCardDialog/>
+            <UomDialog/>
         </>
     )
 };

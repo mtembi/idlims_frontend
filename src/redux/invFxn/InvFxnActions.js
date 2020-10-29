@@ -43,7 +43,7 @@ export const checkRefExistFailure=error=>{
             error
         }
     }
-}
+};
 
 export const checkHasRefError=ref=>{
     return dispatch=>{
@@ -139,15 +139,16 @@ export const fetchStockCardFailure = error => {
             error
         }
     }
-}
+};
 
 export const fetchStockcard = item => {
+    console.log("stockcard req", item);
     return dispatch => {
         dispatch(fetchStockCardRequest());
         axios.post(
             appContants.API_URL+"/api/stockcard/search/",
             {
-                inventory:{id : item.id}
+                id : item
             },
             {
                 headers: {

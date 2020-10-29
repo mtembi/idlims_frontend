@@ -13,7 +13,6 @@ const AppLoginView = () => {
 
 
     useEffect(()=>{
-        console.log("Checking for login error");
         if(hasLoginError.length>0)
             dispatch(showNotification(hasLoginError, "error"));
     }, [hasLoginError, dispatch]);
@@ -23,7 +22,7 @@ const AppLoginView = () => {
         if(isLoggedIn){
             history.push("/");
         }
-    }, [isLoggedIn, dispatch]);
+    }, [isLoggedIn, dispatch, history]);
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");

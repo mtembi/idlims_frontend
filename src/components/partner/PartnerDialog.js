@@ -49,7 +49,7 @@ const PartnerDialog = () => {
     };
 
     const handleSave=()=>{
-        //validator
+        validateData();//todo finish this
         let cust={
             id: custId,
             partnerAddress: custAddress,
@@ -151,7 +151,7 @@ const PartnerDialog = () => {
                         <Grid>
                             <Grid.Row columns={2}>
                                 <Grid.Column>
-                                    <Checkbox toggle checked={custActive} toggle={true}
+                                    <Checkbox toggle checked={custActive}
                                               onChange={() => setCustActive(!custActive)}
                                               label={custActive ? "Active" : "Disabled"}/>
                                 </Grid.Column>

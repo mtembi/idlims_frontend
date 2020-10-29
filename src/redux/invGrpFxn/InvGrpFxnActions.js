@@ -2,12 +2,21 @@ import * as invGrpActions from './InvGrpFxnTypes';
 import axios from 'axios';
 import * as appConstants from '../../constant';
 
+export const setSelectedInvGroupItem=item=>{
+    return {
+        type: invGrpActions.SET_SELECTED_INV_GROUP_ITEM,
+        payload: {
+            item
+        }
+    }
+};
 
-export const showInvGroupDialog=isShown=>{
+export const showInvGroupDialog=(isShown, dialogType=appConstants.ADD_ITEM_CONSTANT)=>{
     return {
         type: invGrpActions.SHOW_INV_GROUP_DIALOG,
         payload: {
-            isShown
+            isShown,
+            dialogType
         }
     }
 };
@@ -49,8 +58,8 @@ export const fetchInvGroup=()=>{
             }
         ).then(
             res=>{
-                console.log(res);
-                dispatch(fetchInvGroupSuccess(res.data));
+                console.log("invgrp", res);
+                dispatch(fetchInvGroupSuccess(res.data))
             },
             err=>dispatch(fetchInvGroupError(err))
         )
@@ -84,18 +93,25 @@ export const pushInvGroupError=error=>{
 export const pushInvGroup=invGroup=>{
     return dispatch=>{
         dispatch(pushInvGroupRequest());
-        axios.put(
+        axios.post(
             appConstants.API_URL+"/api/invgroup/",
             invGroup,
             {
-                headers:{
+                headers: {
                     'Access-Control-Allow-Origin': '*',
                     "Authorization": localStorage.getItem("user")
                 }
             }
         ).then(
-            res=>dispatch(pushInvGroupSuccess(res.data)),
-            err=>dispatch(pushInvGroupError(err))
+            res=>{
+                console.log(res);
+                dispatch(pushInvGroupSuccess(res.data));
+                dispatch(fetchInvGroup());
+            },
+            err=>{
+                console.log(err);
+                dispatch(pushInvGroupError(err))
+            }
         )
     }
 };

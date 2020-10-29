@@ -7,7 +7,6 @@ import Notifier from "./components/ui/Notifier";
 import AppNavBar from "./components/ui/AppNavBar";
 import AppSideBar from "./components/ui/AppSideBar";
 import ImsRouteContent from "./components/ui/ImsRouteContent";
-import AdmRoutes from "./admin/adminui/AdmRoutes";
 
 
 function App() {

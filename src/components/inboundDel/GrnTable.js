@@ -19,16 +19,15 @@ const GrnTable=()=>{
         mode: 'Row'
     };
     const toolbarOptions = ['Add', 'Edit', 'Excel', 'Search'];
-    const dummyData = [];
-    let selectedRecord = null;
+
     useEffect(() => {
         dispatch(fetchTxnDocData(appConstants.DOC_GRN));
-    }, []);
+    }, [dispatch]);
     const handleRowSelected = () => {
 
     };
     const handleRowDeselect = () => {
-        selectedRecord = null;
+
     };
 
     const handleToolbarClick=args=>{

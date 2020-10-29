@@ -31,8 +31,8 @@ const AppNavBar = () => {
     const classes = setStyles();
 
     useEffect(() => {
-        dispatch(fetchNotifications());
-    }, []);
+        dispatch(fetchNotifications());//TODO check if this is working ok
+    }, [dispatch]);
 
     return (
         isLoggedIn ?
@@ -52,7 +52,7 @@ const AppNavBar = () => {
                     </IconButton>
                     <IconButton aria-label="Profile"
                                 aria-controls={acctMenuOpen?'menu-list-grow':undefined}
-                                aria-hasPopup="true"
+                                aria-haspopup="true"
                                 color="inherit"
                                 onClick={()=>setAcctMenuOpen(true)}
                                 ref={acctButtonRef}>

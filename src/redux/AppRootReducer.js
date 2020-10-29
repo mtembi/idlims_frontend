@@ -6,6 +6,8 @@ import {InvGrpReducer} from "./invGrpFxn/InvGrpFxnReducer";
 import {UomFxnReducer} from "./uomFxn/UomFxnReducer";
 import {PartnerFxnReducer} from "./partnerFxn/PartnerFxnReducer";
 import {TxnFxnReducer} from "./txnDocFxn/TxnFxnReducer";
+import {WhFxnReducer} from "./whFxn/WhFxnReducer";
+import {VendOrdFxnReducer} from "./vendOrdFxn/VendOrdFxnReducer";
 import {NotificationReducer} from "./appNotifs/NotifsFxnReducer";
 
 export const rootReducer=combineReducers({
@@ -16,6 +18,8 @@ export const rootReducer=combineReducers({
     uomFxnReducer: UomFxnReducer,
     partnerFxnReducer: PartnerFxnReducer,
     txnFxnReducer: TxnFxnReducer,
+    whFxnReducer: WhFxnReducer,
+    vendOrdReducer: VendOrdFxnReducer,
     notifReducer: NotificationReducer,
 });
 

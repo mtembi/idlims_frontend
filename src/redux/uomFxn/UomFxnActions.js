@@ -97,7 +97,19 @@ export const putUomFailure=error=>{
 export const putUomData=(uom)=>{
     return dispatch=>{
         dispatch(putUomRequest());
-        dispatch(putUomSuccess(uom));
+        axios.post(
+            appConstants.API_URL+"/api/uom/",
+            uom,
+            {
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    "Authorization": localStorage.getItem("user")
+                }
+            }
+        ).then(
+            res=>{dispatch(putUomSuccess(res.data)); dispatch(fetchUomData())},
+            err=>dispatch(putUomFailure(err))
+        );
     }
 };
 
