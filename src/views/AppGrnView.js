@@ -1,6 +1,6 @@
 import React from 'react';
 import {Segment} from "semantic-ui-react";
-import GrnTable from "../components/inboundDel/GrnTable";
+import VendGrnTable from "../components/vendgrn/VendGrnTable";
 
 /**
  * Warning, success, error, info
@@ -15,10 +15,10 @@ const AppGrnView = () => {
     return (
         <Segment.Group raised>
             <Segment inverted color="blue">
-                <h3>Goods Receipts</h3>
+                <h3>Vendor Goods Receipts</h3>
             </Segment>
             <Segment>
-                <GrnTable/>
+                <VendGrnTable/>
             </Segment>
         </Segment.Group>
     )

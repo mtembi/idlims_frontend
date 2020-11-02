@@ -26,7 +26,6 @@ export const statusTemplate = args => {
 };
 
 export const partnerTemplate = args => {
-    console.log(args);
     if (args && args.partner) {
         return <>
             {args.partner.partnerName}{"  "}

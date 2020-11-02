@@ -8,6 +8,8 @@ import AppCustomerView from "../../views/AppCustomerView";
 import AppSupplierView from "../../views/AppSupplierView";
 import AppGrnView from "../../views/AppGrnView";
 import AppVendorOrderView from "../../views/AppVendorOrderView";
+import AppCustOrderView from "../../views/AppCustOrderView";
+import AppCustDelReqView from "../../views/AppCustDelReqView";
 
 const ImsRouteContent = () => {
 
@@ -20,6 +22,8 @@ const ImsRouteContent = () => {
             <ProtectedRoute exact path="/vendor" component={<AppSupplierView/>}></ProtectedRoute>
             <ProtectedRoute exact path="/vendorder" component={<AppVendorOrderView/>}></ProtectedRoute>
             <ProtectedRoute exact path="/grn" component={<AppGrnView/>}></ProtectedRoute>
+            <ProtectedRoute exact path="/deliveryorder" component={<AppCustOrderView/>}></ProtectedRoute>
+            <ProtectedRoute exact path="/deliveryrequest" component={<AppCustDelReqView/>}></ProtectedRoute>
         </Switch>
     )
 };

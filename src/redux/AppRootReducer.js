@@ -9,6 +9,8 @@ import {TxnFxnReducer} from "./txnDocFxn/TxnFxnReducer";
 import {WhFxnReducer} from "./whFxn/WhFxnReducer";
 import {VendOrdFxnReducer} from "./vendOrdFxn/VendOrdFxnReducer";
 import {NotificationReducer} from "./appNotifs/NotifsFxnReducer";
+import {} from './custTxnFxn/CustTxnFxnReducer';
+import {CustDelFxnReducer} from "./custTxnFxn/CustTxnFxnReducer";
 
 export const rootReducer=combineReducers({
     uxReducer: UxReducer,
@@ -20,6 +22,7 @@ export const rootReducer=combineReducers({
     txnFxnReducer: TxnFxnReducer,
     whFxnReducer: WhFxnReducer,
     vendOrdReducer: VendOrdFxnReducer,
+    custTxnFxnReducer: CustDelFxnReducer,
     notifReducer: NotificationReducer,
 });
 

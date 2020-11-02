@@ -71,7 +71,7 @@ const AppSideBar = () => {
                                      onClick={() => {
                                          setVendTxnListOpen(!vendTxnListOpen)
                                      }}
-                                     collapseIcon={vendTxnListOpen ? <ExpandLess color="white"/> : <ExpandMore/>}/>
+                                     collapseIcon={vendTxnListOpen ? <ExpandLess color="inherit"/> : <ExpandMore/>}/>
                     <Collapse in={vendTxnListOpen} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
                             <ImsMenuListItem text="Vendor Order" className={classes.nested}
@@ -91,12 +91,12 @@ const AppSideBar = () => {
                     }} collapseIcon={custTxnListOpen ? <ExpandLess/> : <ExpandMore/>}/>
                     <Collapse in={custTxnListOpen} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
-                            <ImsMenuListItem text="Customer Order" className={classes.nested} onClick={() => {
-                                history.push("/grn");
+                            <ImsMenuListItem text="Delivery Request" className={classes.nested} onClick={() => {
+                                history.push("/deliveryrequest");
                                 dispatch(sideBarToggled());
                             }} subMenu={true}/>
-                            <ImsMenuListItem text="Delivery Note" icon={<LocalShipping/>} className={classes.nested} onClick={() => {
-                                history.push("/grn");
+                            <ImsMenuListItem text="Customer Delivery Order" icon={<LocalShipping/>} className={classes.nested} onClick={() => {
+                                history.push("/deliveryorder");
                                 dispatch(sideBarToggled());
                             }} subMenu={true}/>
                         </List>

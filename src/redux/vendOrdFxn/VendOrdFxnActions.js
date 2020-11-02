@@ -49,6 +49,43 @@ export const fetchVendOrders=()=>{
     }
 };
 
+export const fetchVendGrnRequest=()=>{
+    return {
+        type: vndTypes.FETCH_GRN_ORDER_REQUEST
+    }
+};
+
+export const fetchVendGrnSuccess=data=>{
+    return {
+        type: vndTypes.FETCH_GRN_ORDER_SUCCESS,
+        payload: {
+            data
+        }
+    }
+};
+
+export const fetchVendGrnFailure=error=>{
+    return {
+        type: vndTypes.FETCH_GRN_ORDER_FAILURE,
+        payload: {
+            error
+        }
+    }
+};
+
+export const fetchVendGrn=()=>{
+    return async dispatch=>{
+        dispatch(fetchVendGrnRequest)
+        await axios.get(
+            appConsts.API_URL+"/api/vendgrn/",
+            appConsts.API_HEADERS,
+        ).then(
+            res=>dispatch(fetchVendGrnSuccess(res.data)),
+            error=>dispatch(fetchVendGrnFailure(error))
+        )
+    }
+};
+
 export const pushVendOrdRequest=()=>{
     return {
         type: vndTypes.PUSH_VEND_ORDER_REQUEST

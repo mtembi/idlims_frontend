@@ -11,4 +11,5 @@ export {
 export {showNotification} from './appNotifs/NotifsFxnActions';
 export {showTxnDialog, fetchTxnDocData, setSelectedDocumentItem, putTxnDocData} from "./txnDocFxn/TxnFxnActions";
 export {fetchWhData, pushWhData, checkWhExists, showWhDialog} from './whFxn/WhFxnActions';
-export {fetchVendOrders, pushVendOrder, showVendOrdDialog} from './vendOrdFxn/VendOrdFxnActions';
+export {fetchVendOrders, pushVendOrder, showVendOrdDialog, fetchVendGrn} from './vendOrdFxn/VendOrdFxnActions';
+export {showCustTxnDialog, fetchCustDeliveries, fetchCustDeliveryRequest} from './custTxnFxn/CustTxnFxnActions';

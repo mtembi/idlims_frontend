@@ -1,22 +1,23 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Dropdown, Form, Input, Label, Modal, Segment, TextArea} from "semantic-ui-react";
-import {fetchInventoryData, fetchPartnerData, showVendOrdDialog} from "../../redux";
+import {fetchInventoryData, fetchPartnerData, fetchVendOrders, showVendOrdDialog} from "../../redux";
 import * as appConsts from '../../constant';
-import VendorInputTable2 from "./VendInputTable2";
-import VendInputTable3 from "./VendInputTable3";
+import VendGrnInputTable from "./VendGrnInputTable";
 
-const VendOrderDialog = () => {
+const VendGrnDialog = () => {
     const dispatch = useDispatch();
     const showDialog = useSelector(state => state.vendOrdReducer.dialogShown);
     const dialogType = useSelector(state => state.vendOrdReducer.docType);
     const vendorList = useSelector(state => state.partnerFxnReducer.fetchDataList);
+    const vendorOrderList=useSelector(state=>state.vendOrdReducer.fetchDataList);
     const itemList=useSelector(state=>state.invFxnReducer.inventoryDataList);
     const modalRef = useRef(null);
 
 
     //Value cache
     const [selectedVendor, setSelectedVendor] = useState(null);
+    const [selectedOrder, setSelectedOrder]=useState(null);
     const [vendorAddress, setVendorAddress] = useState("");
     const [detailList] = useState([
         {id: 0, item: null, description: 'Description', dueDate: null, quantity: 0},
@@ -37,6 +38,7 @@ const VendOrderDialog = () => {
     useEffect(() => {
         dispatch(fetchPartnerData(appConsts.SUPPLER_TYPE));
         dispatch(fetchInventoryData());
+        dispatch(fetchVendOrders());
     }, [dispatch]);
 
     useEffect(() => {
@@ -64,6 +66,17 @@ const VendOrderDialog = () => {
         });
     };
 
+    const vendorOrdersMap=orders=>{
+        return orders.map(a=>{
+            console.log(a);
+            return {
+                key: a.id,
+                value: a.id,
+                text: a.docRef
+            }
+        })
+    };
+
     return (
 
         <>
@@ -76,7 +89,7 @@ const VendOrderDialog = () => {
                    size={"large"}
                    onClose={() => dispatch(showVendOrdDialog(false, appConsts.ADD_ITEM_CONSTANT))}>
                 <Modal.Header>
-                    {dialogType} Vendor Order
+                    {dialogType} Vendor Goods Receipt
                 </Modal.Header>
                 <Modal.Content>
                     <Form>
@@ -108,33 +121,22 @@ const VendOrderDialog = () => {
                                         </Input>
                                     </Form.Field>
                                     <Form.Field width={10} style={{float: 'right', margin: '0 0 0.2em 0',}}>
-                                        <Input labelPosition="left" type="text" size="mini" width={7}>
-                                            <Label basic>PO#</Label>
-                                            <input/>
-                                        </Input>
-                                    </Form.Field>
-                                    <Form.Field width={10} style={{float: 'right', margin: '0 0 0.2em 0',}}>
-                                        <Input labelPosition="left" type="date" size="mini">
-                                            <Label basic>PO Date</Label>
-                                            <input/>
-                                        </Input>
-                                    </Form.Field>
-                                    <Form.Field width={10} style={{float: 'right', margin: '0 0 0.2em 0',}}>
-                                        <Input labelPosition="left" type="text" size="mini">
-                                            <Label basic>Requested By</Label>
-                                            <input/>
-                                        </Input>
-                                    </Form.Field>
-                                    <Form.Field width={10} style={{float: 'right', margin: '0 0 0 0'}}>
-                                        <Input labelPosition="left" type="text" size="mini">
-                                            <Label basic>Requisition #</Label>
-                                            <input/>
+                                        <Input labelPosition="left" type="date" size="mini" width={7}>
+                                            <Label basic>Order #</Label>
+                                            <Dropdown placeholder="Select"
+                                                      selection
+                                                      onChange={(e, {value}) => setSelectedOrder(value)}
+                                                      value={selectedOrder}
+                                                      selectOnBlur={true}
+                                                      clearable
+                                                      options={vendorOrdersMap(vendorOrderList)}
+                                                      selectOnNavigation={true}/>
                                         </Input>
                                     </Form.Field>
                                 </Segment>
                             </Segment.Group>
                             <Segment>
-                                <VendInputTable3 invList={itemList} data={detailList} />
+                                <VendGrnInputTable invList={itemList} data={detailList} />
                             </Segment>
                         </Segment.Group>
                     </Form>
@@ -147,4 +149,4 @@ const VendOrderDialog = () => {
     )
 };
 
-export default VendOrderDialog;
+export default VendGrnDialog;

@@ -8,6 +8,11 @@ const vendOrdState = {
     fetchDataLoading: false,
     fetchDataList: [],
     fetchDataError: null,
+
+    fetchGrnDataLoading: false,
+    fetchGrnDataList: [],
+    fetchGrnDataError: null,
+
     pushDataLoading: false,
     pushDataList: [],
     pushDataError: null,
@@ -33,12 +38,29 @@ export const VendOrdFxnReducer = (state = vendOrdState, action) => {
             return produce(state, (draft) => {
                 draft.fetchDataLoading = false;
                 draft.fetchDataList = action.payload.data;
-            })
+            });
         case vndTypes.FETCH_VEND_ORDER_FAILURE:
             return produce(state, (draft) => {
                 draft.fetchDataLoading = false;
                 draft.fetchDataError = action.payload.error;
-            })
+            });
+
+        case vndTypes.FETCH_GRN_ORDER_REQUEST:
+            return produce(state, (draft) => {
+                draft.fetchGrnDataLoading = true;
+                draft.fetchGrnDataList = [];
+                draft.fetchGrnDataError = null;
+            });
+        case vndTypes.FETCH_GRN_ORDER_SUCCESS:
+            return produce(state, (draft) => {
+                draft.fetchGrnDataLoading = false;
+                draft.fetchGrnDataList = action.payload.data;
+            });
+        case vndTypes.FETCH_GRN_ORDER_FAILURE:
+            return produce(state, (draft) => {
+                draft.fetchGrnDataLoading = false;
+                draft.fetchGrnDataError = action.payload.error;
+            });
 
         case vndTypes.PUSH_VEND_ORDER_REQUEST:
             return produce(state, (draft) => {
@@ -73,6 +95,7 @@ export const VendOrdFxnReducer = (state = vendOrdState, action) => {
                 draft.updateDataLoading = true;
                 draft.updateDataError = action.state.error;
             });
-        default: return state;
+        default:
+            return state;
     }
 };
